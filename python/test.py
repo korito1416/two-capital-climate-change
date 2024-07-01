@@ -1,0 +1,30 @@
+import argparse
+
+parser = argparse.ArgumentParser(description="xi_r values")
+parser.add_argument("--xi_a", type=float, default=1000.)
+parser.add_argument("--xi_k", type=float, default=1000.)
+parser.add_argument("--xi_c", type=float, default=1000.)
+parser.add_argument("--xi_j", type=float, default=1000.)
+parser.add_argument("--xi_d", type=float, default=1000.)
+parser.add_argument("--xi_g", type=float, default=1000.)
+parser.add_argument("--varrho", type=float, default=1000.)
+parser.add_argument("--phi_0", type=float)
+parser.add_argument("--rho", type=float)
+parser.add_argument("--delta", type=float)
+parser.add_argument("--id", type=int, default=0)
+parser.add_argument("--psi_0", type=float, default=0.003)
+parser.add_argument("--psi_1", type=float, default=0.5)
+parser.add_argument("--num_gamma",type=int,default=6)
+parser.add_argument("--name",type=str,default="ReplicateSuri")
+parser.add_argument("--outputname",type=str,default="ReplicateSuri")
+parser.add_argument("--hXarr",nargs='+',type=float)
+parser.add_argument("--Xminarr",nargs='+',type=float)
+parser.add_argument("--Xmaxarr",nargs='+',type=float)
+parser.add_argument("--epsilonarr",nargs='+',type=float,default=(0.1))
+parser.add_argument("--fractionarr",nargs='+',type=float, default=(0.1, 0.1))
+parser.add_argument("--maxiterarr",nargs='+',type=int, default=(80000, 200000))
+args, unknown = parser.parse_known_args()
+
+# xi = args.xi_a
+
+# print(xi)

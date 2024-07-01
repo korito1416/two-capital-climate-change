@@ -1,0 +1,15 @@
+### environment files
+src/cppcore/build
+src/cppcore/hpc_temp
+src/cppcore/SolveLinSys.egg-info
+src/linearsystemcore/build
+src/linearsystemcore/petsclinearsystem.egg-info
+src/linearsystemcore/src
+src/linearsystemcore_new/build
+src/linearsystemcore_new/petsclinearsystem_new.egg-info
+src/linearsystemcore_new/src/petsclinearsystem_backup.c
+src/linearsystemcore_new/src/
+python/src/__pycache__
+src/cppcore/eigen3
+bash/
+job-outs/
