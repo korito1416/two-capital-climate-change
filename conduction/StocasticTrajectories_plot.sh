@@ -4,7 +4,7 @@ actiontime=1
 epsilonarraypost=(0.1) 
 
 python_name_unit="StocasticTrajectories_plot.py"
-python_dir="/home/pengyu/TwoCapital_Final/python"
+python_dir="./python"
 output_dir="/scratch/pengyu/"
 NUM_DAMAGE=20
 
@@ -18,9 +18,9 @@ hXarrays=(hXarr1)
 Xminarr=(4.00 0.0 1.0 0.0)
 Xmaxarr=(9.00 4.0 6.0 3.0)
 
-Figure8=true
-Figure11=false
-Figure12=false
+Figure8=$1
+Figure11=$2
+Figure12=$3
 
 if [ "$Figure8" = true ]; then
     xi_a=(100000. 100000. 100000.)
@@ -37,40 +37,18 @@ elif [ "$Figure11" = true ]; then
     xi_d=(0.005 0.075  0.150 100000.)
     xi_g=(0.005 0.075  0.150 100000.)
 elif [ "$Figure12" = true ]; then
-    xi_a=(100000. 100000. 100000.)
-    xi_k=(100000. 100000. 100000.)
-    xi_c=(100000. 100000. 100000.)
-    xi_j=(0.005 0.075 0.150)
-    xi_d=(100000. 100000. 100000.)
-    xi_g=(0.005 0.075 0.150)
+    xi_a=(100000. 100000. 100000. 100000.)
+    xi_k=(100000. 100000. 100000. 100000.)
+    xi_c=(100000. 100000. 100000. 100000.)
+    xi_j=(0.005 0.075 0.150 100000.)
+    xi_d=(100000. 100000. 100000. 100000.)
+    xi_g=(0.005 0.075 0.150 100000.)
 else
-  echo "No valid condition set"
-  exit 1
+    echo "No valid condition set"
+    exit 1
 fi
 
 
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.075  0.150 100000.)
-# xi_c=(0.075  0.150 100000.)
-# xi_j=(0.075  0.150 100000.)
-# xi_d=(0.075  0.150 100000.)
-# xi_g=(0.075  0.150 100000.)
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.005 0.075  0.150 100000.)
-# xi_c=(0.005 0.075  0.150 100000.)
-# xi_j=(0.005 0.075  0.150 100000.)
-# xi_d=(0.005 0.075  0.150 100000.)
-# xi_g=(0.005 0.075  0.150 100000.)
-
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(100000. 100000.  100000. 100000.)
-# xi_c=(100000. 100000.  100000. 100000.)
-# xi_j=(0.005 0.075  0.150 100000.)
-# xi_d=(100000. 100000.  100000. 100000.)
-# xi_g=(0.005 0.075  0.150 100000.)
 
 
 varrhoarr=(1120)
@@ -80,14 +58,9 @@ psi1arr=(0.5)
 
 
 
-# phi0arr=(0.1 0.5)
 phi0arr=(0.5)
 # phi0arr=(0.1)
 LENGTH_phi0=$((${#phi0arr[@]} - 1))
-
-
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.015 0.010 0.010)
 
 
 rhoarr=(1)
@@ -134,7 +107,7 @@ for epsilonpost in ${epsilonarraypost[@]}; do
                         for k in $(seq 0 $LENGTH_scheme); do
                         for kk in $(seq 0 $LENGTH_rho); do
 
-                    mkdir -p ./job-outs3/${action_name}/Graph_Plot_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
+                    mkdir -p ./job-outs/${action_name}/Graph_Plot_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
 
                     if [ -f ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh ]; then
                         rm ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
@@ -149,8 +122,8 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 
 ######## login 
 #SBATCH --job-name=graph_combine
-#SBATCH --output=./job-outs3/${action_name}/Graph_Plot_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/stocplot_${HJBsolution_array[$k]}_${python_name_unit}.out
-#SBATCH --error=./job-outs3/${action_name}/Graph_Plot_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/stocplot_${HJBsolution_array[$k]}_${python_name_unit}.err
+#SBATCH --output=./job-outs/${action_name}/Graph_Plot_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/stocplot_${HJBsolution_array[$k]}_${python_name_unit}.out
+#SBATCH --error=./job-outs/${action_name}/Graph_Plot_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/stocplot_${HJBsolution_array[$k]}_${python_name_unit}.err
 
 #SBATCH --account=pi-lhansen
 #SBATCH --partition=standard

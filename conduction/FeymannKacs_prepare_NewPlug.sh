@@ -4,7 +4,7 @@
 epsilonarraypost=(0.1) 
 
 python_name_unit="FeymannKacs_prepare_NewPlug.py"
-python_dir="/home/pengyu/TwoCapital_Final/python"
+python_dir="./python/"
 output_dir="/scratch/pengyu/"
 NUM_DAMAGE=10
 
@@ -16,63 +16,6 @@ hXarrays=(hXarr1)
 Xminarr=(4.00 0.0 1.0 0.0)
 Xmaxarr=(9.00 4.0 6.0 3.0)
 
-
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.150 100000. 0.150 100000.)
-# xi_c=(0.150 100000. 0.150 100000.)
-# xi_j=(0.150 100000. 0.150 100000.)
-# xi_d=(0.150 100000. 0.150 100000.)
-# xi_g=(0.150 100000. 0.150 100000.)
-# xi_a2=(100000. 100000. 100000. 100000.)
-# xi_k2=(100000. 0.150 0.150 100000.)
-# xi_c2=(100000. 0.150 0.150 100000.)
-# xi_j2=(100000. 0.150 0.150 100000.)
-# xi_d2=(100000. 0.150 0.150 100000.)
-# xi_g2=(100000. 0.150 0.150 100000.)
-
-
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(100000. 100000. 100000. 100000.)
-# xi_c=(100000. 100000. 100000. 100000.)
-# xi_j=(0.005 100000. 0.005 100000.)
-# xi_d=(100000. 100000. 100000. 100000.)
-# xi_g=(0.005 100000. 0.005 100000.)
-# xi_a2=(100000. 100000. 100000. 100000.)
-# xi_k2=(100000. 100000. 100000. 100000.)
-# xi_c2=(100000. 100000. 100000. 100000.)
-# xi_j2=(100000. 0.005 0.005 100000.)
-# xi_d2=(100000. 100000. 100000. 100000.)
-# xi_g2=(100000. 0.005 0.005 100000.)
-
-
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(100000. 100000. 100000. 100000.)
-# xi_c=(100000. 100000. 100000. 100000.)
-# xi_j=(0.150 100000. 0.150 100000.)
-# xi_d=(100000. 100000. 100000. 100000.)
-# xi_g=(0.150 100000. 0.150 100000.)
-# xi_a2=(100000. 100000. 100000. 100000.)
-# xi_k2=(100000. 100000. 100000. 100000.)
-# xi_c2=(100000. 100000. 100000. 100000.)
-# xi_j2=(100000. 0.150 0.150 100000.)
-# xi_d2=(100000. 100000. 100000. 100000.)
-# xi_g2=(100000. 0.150 0.150 100000.)
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(100000. 100000. 100000. 100000.)
-# xi_c=(100000. 100000. 100000. 100000.)
-# xi_j=(0.075 100000. 0.075 100000.)
-# xi_d=(100000. 100000. 100000. 100000.)
-# xi_g=(0.075 100000. 0.075 100000.)
-# xi_a2=(100000. 100000. 100000. 100000.)
-# xi_k2=(100000. 100000. 100000. 100000.)
-# xi_c2=(100000. 100000. 100000. 100000.)
-# xi_j2=(100000. 0.075 0.075 100000.)
-# xi_d2=(100000. 100000. 100000. 100000.)
-# xi_g2=(100000. 0.075 0.075 100000.)
 # table4 : a2 -> pre, a-> post
 xi_a=(100000. 100000. 100000. 100000.)
 xi_k=(100000. 100000. 100000. 100000.)
@@ -96,15 +39,10 @@ psi0arr=(0.105830)
 psi1arr=(0.5)
 
 
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.010 0.010 0.010)
 
 rhoarr=(1)
 deltaarr=(0.010)
 
-
-# rhoarr=(1 1 1)
-# deltaarr=(0.010 0.020 0.030)
 
 
 LENGTH_rho=$((${#rhoarr[@]} - 1))
@@ -125,12 +63,6 @@ LENGTH_xi=$((${#xi_a[@]} - 1))
 
 
 auto=1
-# year=25
-# year=40
-# year=100
-# year=130
-# year=500
-# year=1500
 year=6000
 
 
@@ -158,7 +90,7 @@ for epsilonpost in ${epsilonarraypost[@]}; do
                         for k in $(seq 0 $LENGTH_scheme); do
 							for kk in $(seq 0 $LENGTH_rho); do
 
-                    mkdir -p ./job-outs4/${action_name}/Graph_Simulate_prepare/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
+                    mkdir -p ./job-outs/${action_name}/Graph_Simulate_prepare/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
 
                     if [ -f ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh ]; then
                         rm ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
@@ -173,8 +105,8 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 
 ######## login 
 #SBATCH --job-name=sim_${year}
-#SBATCH --output=./job-outs4/${action_name}/Graph_Simulate_prepare/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_prepare_${python_name_unit}.out
-#SBATCH --error=./job-outs4/${action_name}/Graph_Simulate_prepare/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_prepare_${python_name_unit}.err
+#SBATCH --output=./job-outs/${action_name}/Graph_Simulate_prepare/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_prepare_${python_name_unit}.out
+#SBATCH --error=./job-outs/${action_name}/Graph_Simulate_prepare/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_prepare_${python_name_unit}.err
 
 #SBATCH --account=pi-lhansen
 #SBATCH --partition=standard

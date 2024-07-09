@@ -13,3 +13,5 @@ python/src/__pycache__
 src/cppcore/eigen3
 bash/
 job-outs/
+output/
+figure/

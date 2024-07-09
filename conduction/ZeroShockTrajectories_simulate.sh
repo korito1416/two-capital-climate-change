@@ -4,8 +4,8 @@
 epsilonarraypost=(0.1) 
 
 python_name_unit="ZeroShockTrajectories_simulate.py"
-
-python_dir="/home/pengyu/TwoCapital_Final/python"
+current_dir=$(pwd)
+python_dir="./python"
 output_dir="/scratch/pengyu/"
 
 
@@ -24,77 +24,44 @@ Xmaxarr=(9.00 4.0 6.0 3.0)
 
 
 
+all_channel=$1
+single_channel_more_aversion=$2
+single_channel_less_aversion=$3
+figure4_search_xia=$4
 
-all_channel=true
-single_channel_more_aversion=false
-single_channel_less_aversion=false
-
+# Setting xi arrays based on flags
 if [ "$all_channel" = true ]; then
-	# smart guess id 13
-	xi_a=(100000. 100000. 100000.)
-	xi_k=(0.075  0.150 100000.)
-	xi_c=(0.075  0.150 100000.)
-	xi_j=(0.075  0.150 100000.)
-	xi_d=(0.075  0.150 100000.)
-	xi_g=(0.075  0.150 100000.)
+    xi_a=(100000. 100000. 100000.)
+    xi_k=(0.075 0.150 100000.)
+    xi_c=(0.075 0.150 100000.)
+    xi_j=(0.075 0.150 100000.)
+    xi_d=(0.075 0.150 100000.)
+    xi_g=(0.075 0.150 100000.)
 elif [ "$single_channel_more_aversion" = true ]; then
-	# smart guess id 11
-	# table 3
-	xi_a=(100000. 100000. 100000. 100000.)
-	xi_k=(0.075 100000. 100000. 100000.)
-	xi_c=(100000. 0.075 100000. 100000.)
-	xi_j=(100000. 100000. 0.075 100000.)
-	xi_d=(100000. 100000. 100000. 0.075)
-	xi_g=(100000. 100000. 0.075 100000.)
+    xi_a=(100000. 100000. 100000. 100000.)
+    xi_k=(0.075 100000. 100000. 100000.)
+    xi_c=(100000. 0.075 100000. 100000.)
+    xi_j=(100000. 100000. 0.075 100000.)
+    xi_d=(100000. 100000. 100000. 0.075)
+    xi_g=(100000. 100000. 0.075 100000.)
 elif [ "$single_channel_less_aversion" = true ]; then
-	# smart guess id 12
-	xi_a=(100000. 100000. 100000. 100000.)
-	xi_k=(0.150 100000. 100000. 100000.)
-	xi_c=(100000. 0.150 100000. 100000.)
-	xi_j=(100000. 100000. 0.150 100000.)
-	xi_d=(100000. 100000. 100000. 0.150)
-	xi_g=(100000. 100000. 0.150 100000.)
+    xi_a=(100000. 100000. 100000. 100000.)
+    xi_k=(0.150 100000. 100000. 100000.)
+    xi_c=(100000. 0.150 100000. 100000.)
+    xi_j=(100000. 100000. 0.150 100000.)
+    xi_d=(100000. 100000. 100000. 0.150)
+    xi_g=(100000. 100000. 0.150 100000.)
+elif [ "$figure4_search_xia" = true ]; then
+    xi_a=(0.0025 0.0030 100000.)
+    xi_k=(0.075 0.150 100000.)
+    xi_c=(100000. 100000. 100000.)
+    xi_j=(0.075 0.150 100000.)
+    xi_d=(0.075 0.150 100000.)
+    xi_g=(0.075 0.150 100000.)
 else
-  echo "No valid condition set"
-  exit 1
+    echo "No valid condition set"
+    exit 1
 fi
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.025  0.050 100000.)
-# xi_c=(0.025  0.050 100000.)
-# xi_j=(0.025  0.050 100000.)
-# xi_d=(0.025  0.050 100000.)
-# xi_g=(0.025  0.050 100000.)
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.075  0.150 100000.)
-# xi_c=(0.075  0.150 100000.)
-# xi_j=(0.075  0.150 100000.)
-# xi_d=(0.075  0.150 100000.)
-# xi_g=(0.075  0.150 100000.)
-
-    # 0.0030 possible
-# xi_a=(0.0027 0.0028 0.0029 0.0030 0.0031 0.0032 0.0033)
-# xi_k=(0.150 0.150 0.150 0.150 0.150 0.150 0.150)
-# xi_c=(100000. 100000. 100000. 100000. 100000. 100000. 100000.)
-# xi_j=(0.150 0.150 0.150 0.150 0.150 0.150 0.150)
-# xi_d=(0.150 0.150 0.150 0.150 0.150 0.150 0.150)
-# xi_g=(0.150 0.150 0.150 0.150 0.150 0.150 0.150)
-
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.075 100000. 100000. 100000.)
-# xi_c=(100000. 0.075 100000. 100000.)
-# xi_j=(100000. 100000. 0.075 100000.)
-# xi_d=(100000. 100000. 100000. 0.075)
-# xi_g=(100000. 100000. 0.075 100000.)
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.150 100000. 100000. 100000.)
-# xi_c=(100000. 0.150 100000. 100000.)
-# xi_j=(100000. 100000. 0.150 100000.)
-# xi_d=(100000. 100000. 100000. 0.150)
-# xi_g=(100000. 100000. 0.150 100000.)
 
 
 varrhoarr=(1120)
@@ -104,15 +71,9 @@ psi0arr=(0.105830)
 psi1arr=(0.5)
 
 
-
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.010 0.010 0.010)
-
 rhoarr=(1)
 deltaarr=(0.010)
 
-# rhoarr=(1 1 1)
-# deltaarr=(0.010 0.020 0.030)
 
 
 
@@ -136,13 +97,7 @@ interp_action_name="2jump_step_0.2_0.2_0.2_LR_0.01"
 fstr_SG="NearestNDInterpolator"
 
 auto=1
-# year=25
 year=40
-# year=100
-# year=130
-# year=500
-# year=1500
-# year=6000
 
 
 scheme_array=("direct")
@@ -170,7 +125,7 @@ for epsilonpost in ${epsilonarraypost[@]}; do
                         for k in $(seq 0 $LENGTH_scheme); do
 							for kk in $(seq 0 $LENGTH_rho); do
 
-                    mkdir -p ./job-outs3/${action_name}/Graph_Simulate/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
+                    mkdir -p ./job-outs/${action_name}/Graph_Simulate/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
 
                     if [ -f ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh ]; then
                         rm ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
@@ -185,8 +140,8 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 
 ######## login 
 #SBATCH --job-name=sim_${year}
-#SBATCH --output=./job-outs3/${action_name}/Graph_Simulate/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_simulate_${year}.out
-#SBATCH --error=./job-outs3/${action_name}/Graph_Simulate/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_simulate_${year}.err
+#SBATCH --output=./job-outs/${action_name}/Graph_Simulate/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_simulate_${year}.out
+#SBATCH --error=./job-outs/${action_name}/Graph_Simulate/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_simulate_${year}.err
 
 #SBATCH --account=pi-lhansen
 #SBATCH --partition=highmem

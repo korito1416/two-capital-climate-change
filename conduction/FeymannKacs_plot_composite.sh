@@ -4,7 +4,8 @@ epsilonarraypost=(0.1)
 NUM_DAMAGE=20
 
 python_name_unit="FeymannKacs_plot_Composite.py"
-python_dir="/home/pengyu/TwoCapital_Final/python"
+current_dir=$(pwd)
+python_dir="./python"
 output_dir="/scratch/pengyu/"
 declare -A hXarr1=([0]=0.2 [1]=0.2 [2]=0.2)
 declare -A hXarr2=([0]=0.1 [1]=0.1 [2]=0.1)
@@ -17,17 +18,6 @@ Xmaxarr=(9.00 4.0 6.0 3.0)
 
 
 
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.025  0.050 100000.)
-# xi_c=(0.025  0.050 100000.)
-# xi_j=(0.025  0.050 100000.)
-# xi_d=(0.025  0.050 100000.)
-# xi_g=(0.025  0.050 100000.)
-
-
-
-
 xi_a=(100000. 100000. 100000.)
 xi_k=(0.075  0.150 100000.)
 xi_c=(0.075  0.150 100000.)
@@ -36,43 +26,14 @@ xi_d=(0.075  0.150 100000.)
 xi_g=(0.075  0.150 100000.)
 
 
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.075 100000. 100000. 100000.)
-# xi_c=(100000. 0.075 100000. 100000.)
-# xi_j=(100000. 100000. 0.075 100000.)
-# xi_d=(100000. 100000. 100000. 0.075)
-# xi_g=(100000. 100000. 0.075 100000.)
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.150 100000. 100000. 100000.)
-# xi_c=(100000. 0.150 100000. 100000.)
-# xi_j=(100000. 100000. 0.150 100000.)
-# xi_d=(100000. 100000. 100000. 0.150)
-# xi_g=(100000. 100000. 0.150 100000.)
-
-
-
 varrhoarr=(1120)
 
 
 psi0arr=(0.105830)
 psi1arr=(0.5)
 
-
-
-
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.010 0.010 0.010)
-
 rhoarr=(1)
 deltaarr=(0.010)
-
-
-# rhoarr=(1 1 1)
-# deltaarr=(0.010 0.020 0.030)
-
-
 
 
 LENGTH_rho=$((${#rhoarr[@]} - 1))
@@ -98,17 +59,8 @@ LENGTH_scheme=$((${#scheme_array[@]} - 1))
 
 
 auto=1
-# year=25
-# year=40
-# year=45
-# year=50
 year=55
-# year=130
-# year=500
-# year=1500
-# year=500
-# m0_array=("Temp")
-# m0_array="Temperature"
+
 m0_array="Technology"
 
 LENGTH_m0_array=$((${#m0_array[@]} - 1))
@@ -126,7 +78,7 @@ for epsilonpost in ${epsilonarraypost[@]}; do
                         for k in $(seq 0 $LENGTH_scheme); do
 							for kk in $(seq 0 $LENGTH_rho); do
 
-                    mkdir -p ./job-outs3/${action_name}/Graph_Simulate_plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/
+                    mkdir -p ./job-outs/${action_name}/Graph_Simulate_plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/
 
                     if [ -f ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh ]; then
                         rm ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
@@ -141,8 +93,8 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 
 ######## login 
 #SBATCH --job-name=plot_${year}_${m0_array}
-#SBATCH --output=./job-outs3/${action_name}/Graph_Simulate_plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/graph_${python_name_unit}_${year}_${m0_array}_${xi_j[0]}.out
-#SBATCH --error=./job-outs3/${action_name}/Graph_Simulate_plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/graph_${python_name_unit}_${year}_${m0_array}_${xi_j[0]}.err
+#SBATCH --output=./job-outs/${action_name}/Graph_Simulate_plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/graph_${python_name_unit}_${year}_${m0_array}_${xi_j[0]}.out
+#SBATCH --error=./job-outs/${action_name}/Graph_Simulate_plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/graph_${python_name_unit}_${year}_${m0_array}_${xi_j[0]}.err
 
 #SBATCH --account=pi-lhansen
 #SBATCH --partition=highmem

@@ -4,7 +4,7 @@ actiontime=1
 
 
 python_name_unit="DateValueReport_Table.py"
-python_dir="/home/pengyu/TwoCapital_Final/python"
+python_dir="./python/"
 output_dir="/scratch/pengyu/"
 
 epsilonarraypost=(0.1) 
@@ -19,8 +19,6 @@ Xminarr=(4.00 0.0 1.0 0.0)
 Xmaxarr=(9.00 4.0 6.0 3.0)
 
 
-
-
 xi_a=(100000. 100000. 100000.)
 xi_k=(0.150 0.075 100000.)
 xi_c=(0.150 0.075 100000.)
@@ -29,32 +27,14 @@ xi_d=(0.150 0.075 100000.)
 xi_g=(0.150 0.075 100000.)
 
 
-
-# xi_a=(100000. 100000. 100000. 100000. 100000. 100000. 100000.)
-# xi_k=(0.075  0.150 100000. 100000. 100000. 0.150   100000.)
-# xi_c=(0.075  0.150 100000. 0.150 100000. 100000. 100000.)
-# xi_j=(0.075  0.150 100000. 100000. 100000. 100000. 0.150) 
-# xi_d=(0.075  0.150 100000. 100000. 0.150 100000. 100000.)
-# xi_g=(0.075  0.150 100000. 100000. 100000. 100000. 0.150)
-
-
-
-
 varrhoarr=(1120)
 psi0arr=(0.105830)
 psi1arr=(0.5)
 
-
-
-# phi0arr=(0.1 0.5)
 phi0arr=(0.5)
-# phi0arr=(0.1)
+
 LENGTH_phi0=$((${#phi0arr[@]} - 1))
 
-
-
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.015 0.010 0.010)
 
 
 rhoarr=(1)
@@ -63,7 +43,6 @@ deltaarr=(0.010)
 
 
 LENGTH_rho=$((${#rhoarr[@]} - 1))
-
 
 
 server_name="mercury"
@@ -78,7 +57,6 @@ interp_action_name="2jump_step_0.2_0.2_0.2_LR_0.01"
 fstr_SG="NearestNDInterpolator"
 
 auto=1
-# year=25
 year=40
 
 
@@ -107,7 +85,7 @@ for epsilonpost in ${epsilonarraypost[@]}; do
                         for k in $(seq 0 $LENGTH_scheme); do
                         for kk in $(seq 0 $LENGTH_rho); do
 
-                    mkdir -p ./job-outs3/${action_name}/Graph_Table/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
+                    mkdir -p ./job-outs/${action_name}/Graph_Table/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
 
                     if [ -f ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh ]; then
                         rm ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
@@ -122,8 +100,8 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 
 ######## login 
 #SBATCH --job-name=graph_combine
-#SBATCH --output=./job-outs3/${action_name}/Graph_Table/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_${HJBsolution_array[$k]}_${python_name_unit}.out
-#SBATCH --error=./job-outs3/${action_name}/Graph_Table/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_${HJBsolution_array[$k]}_${python_name_unit}.err
+#SBATCH --output=./job-outs/${action_name}/Graph_Table/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_${HJBsolution_array[$k]}_${python_name_unit}.out
+#SBATCH --error=./job-outs/${action_name}/Graph_Table/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_${HJBsolution_array[$k]}_${python_name_unit}.err
 
 #SBATCH --account=pi-lhansen
 ##SBATCH --partition=standard

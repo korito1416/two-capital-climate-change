@@ -1,10 +1,13 @@
 #! /bin/bash
 
+
+
+current_dir=$(pwd)
 epsilonarraypost=(0.1) 
 epsilonarraypre=(0.1)
 
 python_name="Predamage.py"
-python_dir="/home/pengyu/TwoCapital_Final/python"
+python_dir="./python"
 output_dir="/scratch/pengyu/"
 
 NUM_DAMAGE=20
@@ -21,85 +24,59 @@ Xminarr=(4.00 0.0 1.0 0.0)
 Xmaxarr=(9.00 4.0 6.0 3.0)
 
 
+all_channel=$1
+single_channel_more_aversion=$2
+single_channel_less_aversion=$3
+figure4_search_xia=$4
+appendix=$5
 
-all_channel=false
-single_channel_more_aversion=false
-single_channel_less_aversion=true
-
+# Setting xi arrays based on flags
 if [ "$all_channel" = true ]; then
-	# smart guess id 13
-	xi_a=(100000. 100000. 100000.)
-	xi_k=(0.075  0.150 100000.)
-	xi_c=(0.075  0.150 100000.)
-	xi_j=(0.075  0.150 100000.)
-	xi_d=(0.075  0.150 100000.)
-	xi_g=(0.075  0.150 100000.)
+    xi_a=(100000. 100000. 100000.)
+    xi_k=(0.075 0.150 100000.)
+    xi_c=(0.075 0.150 100000.)
+    xi_j=(0.075 0.150 100000.)
+    xi_d=(0.075 0.150 100000.)
+    xi_g=(0.075 0.150 100000.)
 elif [ "$single_channel_more_aversion" = true ]; then
-	# smart guess id 11
-	# table 3
-	xi_a=(100000. 100000. 100000. 100000.)
-	xi_k=(0.075 100000. 100000. 100000.)
-	xi_c=(100000. 0.075 100000. 100000.)
-	xi_j=(100000. 100000. 0.075 100000.)
-	xi_d=(100000. 100000. 100000. 0.075)
-	xi_g=(100000. 100000. 0.075 100000.)
+    xi_a=(100000. 100000. 100000. 100000.)
+    xi_k=(0.075 100000. 100000. 100000.)
+    xi_c=(100000. 0.075 100000. 100000.)
+    xi_j=(100000. 100000. 0.075 100000.)
+    xi_d=(100000. 100000. 100000. 0.075)
+    xi_g=(100000. 100000. 0.075 100000.)
 elif [ "$single_channel_less_aversion" = true ]; then
-	# smart guess id 12
-	xi_a=(100000. 100000. 100000. 100000.)
-	xi_k=(0.150 100000. 100000. 100000.)
-	xi_c=(100000. 0.150 100000. 100000.)
-	xi_j=(100000. 100000. 0.150 100000.)
-	xi_d=(100000. 100000. 100000. 0.150)
-	xi_g=(100000. 100000. 0.150 100000.)
+    xi_a=(100000. 100000. 100000. 100000.)
+    xi_k=(0.150 100000. 100000. 100000.)
+    xi_c=(100000. 0.150 100000. 100000.)
+    xi_j=(100000. 100000. 0.150 100000.)
+    xi_d=(100000. 100000. 100000. 0.150)
+    xi_g=(100000. 100000. 0.150 100000.)
+elif [ "$figure4_search_xia" = true ]; then
+    xi_a=(0.0025 0.0030 100000.)
+    xi_k=(0.075 0.150 100000.)
+    xi_c=(100000. 100000. 100000.)
+    xi_j=(0.075 0.150 100000.)
+    xi_d=(0.075 0.150 100000.)
+    xi_g=(0.075 0.150 100000.)
+elif [ "$appendix" = true ]; then
+    xi_a=(100000. 100000. 100000. 100000.)
+    xi_k=(0.005 100000. 100000. 100000.)
+    xi_c=(0.005 100000. 100000. 100000.)
+    xi_j=(0.005 0.005 0.075 0.150)
+    xi_d=(0.005 100000. 100000. 100000.)
+    xi_g=(0.005 0.005 0.075 0.150)
 else
-  echo "No valid condition set"
-  exit 1
+    echo "No valid condition set"
+    exit 1
 fi
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.025  0.050 100000.)
-# xi_c=(0.025  0.050 100000.)
-# xi_j=(0.025  0.050 100000.)
-# xi_d=(0.025  0.050 100000.)
-# xi_g=(0.025  0.050 100000.)
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.075  0.150 100000.)
-# xi_c=(0.075  0.150 100000.)
-# xi_j=(0.075  0.150 100000.)
-# xi_d=(0.075  0.150 100000.)
-# xi_g=(0.075  0.150 100000.)
-
-
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.075 100000. 100000. 100000.)
-# xi_c=(100000. 0.075 100000. 100000.)
-# xi_j=(100000. 100000. 0.075 100000.)
-# xi_d=(100000. 100000. 100000. 0.075)
-# xi_g=(100000. 100000. 0.075 100000.)
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.150 100000. 100000. 100000.)
-# xi_c=(100000. 0.150 100000. 100000.)
-# xi_j=(100000. 100000. 0.150 100000.)
-# xi_d=(100000. 100000. 100000. 0.150)
-# xi_g=(100000. 100000. 0.150 100000.)
 
 
 varrhoarr=(1120)
 
 
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.010 0.010 0.010)
-
-
 rhoarr=(1)
 deltaarr=(0.010)
-
-
-# rhoarr=(1 1 1)
-# deltaarr=(0.010 0.020 0.030)
 
 LENGTH_rho=$((${#rhoarr[@]} - 1))
 
@@ -108,9 +85,6 @@ psi1arr=(0.5)
 LENGTH_psi=$((${#psi0arr[@]} - 1))
 LENGTH_xi=$((${#xi_a[@]} - 1))
 
-
-
-# phi0arr=(0.1 0.5)
 phi0arr=(0.5)
 
 LENGTH_phi0=$((${#phi0arr[@]} - 1))
@@ -134,7 +108,7 @@ for epsilon in ${epsilonarraypre[@]}; do
 					for j in $(seq 0 $LENGTH_xi); do
 							for k in $(seq 0 $LENGTH_rho); do
 
-							mkdir -p ./job-outs3/${action_name}/Pre/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/
+							mkdir -p ./job-outs/${action_name}/Pre/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/
 
 							if [ -f ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_Eps_${epsilon}.sh ]; then
 								rm ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_Eps_${epsilon}.sh
@@ -149,16 +123,16 @@ for epsilon in ${epsilonarraypre[@]}; do
 
 ######## login
 #SBATCH --job-name=${Xminarr[1]}_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_${rhoarr[$k]}_phi0_${phi0arr[$phi0index]}_${epsilon}
-#SBATCH --output=./job-outs3/${action_name}/Pre/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_pre_${epsilon}.out
-#SBATCH --error=./job-outs3/${action_name}/Pre/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_pre_${epsilon}.err
+#SBATCH --output=./job-outs/${action_name}/Pre/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_pre_${epsilon}.out
+#SBATCH --error=./job-outs/${action_name}/Pre/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_pre_${epsilon}.err
 
 #SBATCH --account=pi-lhansen
 #SBATCH --partition=standard
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=20G
+#SBATCH --mem=1G
 #SBATCH --time=7-00:00:00
-##SBATCH --exclude=mcn53
-##SBATCH --nodelist=mcn08
+#SBATCH --exclude=mcn53,mcn55,mcn57,mcn08
+
 
 module purge
 ####### load modules

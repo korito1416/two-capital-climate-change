@@ -3,7 +3,7 @@
 actiontime=1
 epsilonarraypost=(0.1) 
 python_name_unit="StocasticTrajectories_simulate.py"
-python_dir="/home/pengyu/TwoCapital_Final/python"
+python_dir="./python"
 output_dir="/scratch/pengyu/"
 
 NUM_DAMAGE=20
@@ -18,16 +18,8 @@ Xminarr=(4.00 0.0 1.0 0.0)
 Xmaxarr=(9.00 4.0 6.0 3.0)
 
 
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.025  0.050 100000.)
-# xi_c=(0.025  0.050 100000.)
-# xi_j=(0.025  0.050 100000.)
-# xi_d=(0.025  0.050 100000.)
-# xi_g=(0.025  0.050 100000.)
-Figure8=true
-Figure11=false
-Figure12=false
+Figure8=$1
+Figure11=$2
 
 if [ "$Figure8" = true ]; then
     xi_a=(100000. 100000. 100000.)
@@ -38,18 +30,15 @@ if [ "$Figure8" = true ]; then
     xi_g=(0.075  0.150 100000.)
 elif [ "$Figure11" = true ]; then
     xi_a=(100000. 100000. 100000. 100000.)
-    xi_k=(0.005 0.075  0.150 100000.)
-    xi_c=(0.005 0.075  0.150 100000.)
-    xi_j=(0.005 0.075  0.150 100000.)
-    xi_d=(0.005 0.075  0.150 100000.)
-    xi_g=(0.005 0.075  0.150 100000.)
-elif [ "$Figure12" = true ]; then
-    xi_a=(100000. 100000. 100000.)
-    xi_k=(100000. 100000. 100000.)
-    xi_c=(100000. 100000. 100000.)
-    xi_j=(0.005 0.075 0.150)
-    xi_d=(100000. 100000. 100000.)
-    xi_g=(0.005 0.075 0.150)
+    xi_k=(0.005 100000. 100000. 100000.)
+    xi_c=(0.005 100000. 100000. 100000.)
+    xi_j=(0.005 0.005 0.075 0.150)
+    xi_d=(0.005 100000. 100000. 100000.)
+    xi_g=(0.005 0.005 0.075 0.150)
+else
+    echo "No valid condition set"
+    exit 1
+fi
 
 
 varrhoarr=(1120)
@@ -58,8 +47,6 @@ varrhoarr=(1120)
 psi0arr=(0.105830)
 psi1arr=(0.5)
 
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.010 0.010 0.010)
 
 
 rhoarr=(1)
@@ -68,7 +55,6 @@ deltaarr=(0.010)
 
 LENGTH_rho=$((${#rhoarr[@]} - 1))
 
-# phi0arr=(0.1 0.5)
 phi0arr=(0.5)
 # phi0arr=(0.1)
 LENGTH_phi0=$((${#phi0arr[@]} - 1))
@@ -118,7 +104,7 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 							for kk in $(seq 0 $LENGTH_rho); do
                                 for sim in $(seq 0 $ID_SimEpoch); do
 
-                    mkdir -p ./job-outs3/${action_name}/Graph_Simulate_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
+                    mkdir -p ./job-outs/${action_name}/Graph_Simulate_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/
 
                     if [ -f ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph_Sim_{$sim}.sh ]; then
                         rm ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph_Sim_{$sim}.sh
@@ -133,8 +119,8 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 
 ######## login 
 #SBATCH --job-name=sim_${year}_${sim}
-#SBATCH --output=./job-outs3/${action_name}/Graph_Simulate_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_simulate_${year}_${sim}.out
-#SBATCH --error=./job-outs3/${action_name}/Graph_Simulate_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_simulate_${year}_${sim}.err
+#SBATCH --output=./job-outs/${action_name}/Graph_Simulate_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_simulate_${year}_${sim}.out
+#SBATCH --error=./job-outs/${action_name}/Graph_Simulate_stoc/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_simulate_${year}_${sim}.err
 
 #SBATCH --account=pi-lhansen
 #SBATCH --partition=standard

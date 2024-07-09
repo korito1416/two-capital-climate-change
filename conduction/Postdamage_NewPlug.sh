@@ -2,7 +2,7 @@
 
 epsilonarray=(0.1) 
 python_name="Postdamage_NewPlug.py" 
-python_dir="/home/pengyu/TwoCapital_Final/python"
+python_dir="./python/"
 output_dir="/scratch/pengyu/"
 NUM_DAMAGE=20
 ID_MAX_DAMAGE=$((NUM_DAMAGE - 1))
@@ -13,27 +13,11 @@ declare -A hXarr2=([0]=0.1 [1]=0.1 [2]=0.1)
 hXarrays=(hXarr1)
 # hXarrays=(hXarr2)
 
-
+id_sub=12
 
 Xminarr=(4.00 0.0 1.0 0.0)
 Xmaxarr=(9.00 4.0 6.0 3.0)
 
-
-
-
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.150 100000. 0.150 100000.)
-# xi_c=(0.150 100000. 0.150 100000.)
-# xi_j=(0.150 100000. 0.150 100000.)
-# xi_d=(0.150 100000. 0.150 100000.)
-# xi_g=(0.150 100000. 0.150 100000.)
-# xi_a2=(100000. 100000. 100000. 100000.)
-# xi_k2=(100000. 0.150 0.150 100000.)
-# xi_c2=(100000. 0.150 0.150 100000.)
-# xi_j2=(100000. 0.150 0.150 100000.)
-# xi_d2=(100000. 0.150 0.150 100000.)
-# xi_g2=(100000. 0.150 0.150 100000.)
 
 
 # table4 : a2 -> pre, a-> post
@@ -52,63 +36,11 @@ xi_g2=(100000. 0.150 0.150 100000.)
 
 
 
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(100000. 100000. 100000. 100000.)
-# xi_c=(100000. 100000. 100000. 100000.)
-# xi_j=(0.075 100000. 0.075 100000.)
-# xi_d=(100000. 100000. 100000. 100000.)
-# xi_g=(0.075 100000. 0.075 100000.)
-# xi_a2=(100000. 100000. 100000. 100000.)
-# xi_k2=(100000. 100000. 100000. 100000.)
-# xi_c2=(100000. 100000. 100000. 100000.)
-# xi_j2=(100000. 0.075 0.075 100000.)
-# xi_d2=(100000. 100000. 100000. 100000.)
-# xi_g2=(100000. 0.075 0.075 100000.)
-
-
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(100000. 100000. 100000. 100000.)
-# xi_c=(100000. 100000. 100000. 100000.)
-# xi_j=(0.005 100000. 0.005 100000.)
-# xi_d=(100000. 100000. 100000. 100000.)
-# xi_g=(0.005 100000. 0.005 100000.)
-# xi_a2=(100000. 100000. 100000. 100000.)
-# xi_k2=(100000. 100000. 100000. 100000.)
-# xi_c2=(100000. 100000. 100000. 100000.)
-# xi_j2=(100000. 0.005 0.005 100000.)
-# xi_d2=(100000. 100000. 100000. 100000.)
-# xi_g2=(100000. 0.005 0.005 100000.)
-
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(100000. 100000. 100000.)
-# xi_c=(100000. 100000. 100000.)
-# xi_j=(0.005 100000. 0.005)
-# xi_d=(100000. 100000. 100000.)
-# xi_g=(0.005 100000. 0.005)
-# xi_a2=(100000. 100000. 100000.)
-# xi_k2=(100000. 100000. 100000.)
-# xi_c2=(100000. 100000. 100000.)
-# xi_j2=(100000. 0.005 0.005)
-# xi_d2=(100000. 100000. 100000.)
-# xi_g2=(100000. 0.005 0.005)
-
 
 varrhoarr=(1120)
 
-
-
-
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.010 0.010 0.010)
-
 rhoarr=(1)
 deltaarr=(0.010)
-
-# rhoarr=(1 1 1)
-# deltaarr=(0.010 0.020 0.030)
-
 
 LENGTH_rho=$((${#rhoarr[@]} - 1))
 
@@ -142,14 +74,14 @@ for epsilon in ${epsilonarray[@]}; do
 		epsilonarr=(0.1 ${epsilon})
 		fractionarr=(0.1 ${epsilon})
 
-		for i in $(seq 0 $ID_MAX_DAMAGE); do
+		for i in $(seq 0 $id_sub); do
 			for PSI_0 in ${psi0arr[@]}; do
 				for PSI_1 in ${psi1arr[@]}; do
 					for varrho in ${varrhoarr[@]}; do
 						for j in $(seq 0 $LENGTH_xi); do
 							for k in $(seq 0 $LENGTH_rho); do
 
-								mkdir -p ./job-outs4/${action_name}/Post/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/
+								mkdir -p ./job-outs/${action_name}/Post/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/
 
 								if [ -f ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh ]; then
 									rm ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh
@@ -164,8 +96,8 @@ for epsilon in ${epsilonarray[@]}; do
 
 ######## login
 #SBATCH --job-name=${Xminarr[1]}_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_${rhoarr[$k]}_phi0_${phi0arr[$phi0index]}_${i}_${epsilon}
-#SBATCH --output=./job-outs4/${action_name}/Post/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_subs.out
-#SBATCH --error=./job-outs4/${action_name}/Post/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_subs.err
+#SBATCH --output=./job-outs/${action_name}/Post/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_subs.out
+#SBATCH --error=./job-outs/${action_name}/Post/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_subs.err
 
 #SBATCH --account=pi-lhansen
 #SBATCH --partition=standard

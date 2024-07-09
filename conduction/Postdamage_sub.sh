@@ -1,8 +1,8 @@
 #! /bin/bash
-
+current_dir=$(pwd)
 epsilonarray=(0.1) 
 python_name="Postdamage_sub.py" 
-python_dir="/home/pengyu/TwoCapital_Final/python"
+python_dir="./python/"
 output_dir="/scratch/pengyu/"
 NUM_DAMAGE=20
 ID_MAX_DAMAGE=$((NUM_DAMAGE - 1))
@@ -21,10 +21,11 @@ Xmaxarr=(9.00 4.0 6.0 3.0)
 
 id_sub=11
 
-all_channel=false
-single_channel_more_aversion=false
-single_channel_less_aversion=false
-figure4_search_xia=true
+all_channel=$1
+single_channel_more_aversion=$2
+single_channel_less_aversion=$3
+figure4_search_xia=$4
+appendix=$5
 
 if [ "$all_channel" = true ]; then
 	# smart guess id 13
@@ -52,64 +53,25 @@ elif [ "$single_channel_less_aversion" = true ]; then
 	xi_d=(100000. 100000. 100000. 0.150)
 	xi_g=(100000. 100000. 0.150 100000.)
 elif [ "$figure4_search_xia" = true ]; then	
-	xi_a=(0.0027 0.0028 0.0029 0.0030 0.0031 0.0032 0.0033)
-	xi_k=(0.150 0.150 0.150 0.150 0.150 0.150 0.150)
-	xi_c=(100000. 100000. 100000. 100000. 100000. 100000. 100000.)
-	xi_j=(0.150 0.150 0.150 0.150 0.150 0.150 0.150)
-	xi_d=(0.150 0.150 0.150 0.150 0.150 0.150 0.150)
-	xi_g=(0.150 0.150 0.150 0.150 0.150 0.150 0.150)
+    xi_a=(0.0025 0.0030 100000.)
+    xi_k=(0.075 0.150 100000.)
+    xi_c=(100000. 100000. 100000.)
+    xi_j=(0.075 0.150 100000.)
+    xi_d=(0.075 0.150 100000.)
+    xi_g=(0.075 0.150 100000.)
+elif [ "$appendix" = true ]; then
+    xi_a=(100000. 100000. 100000. 100000.)
+    xi_k=(0.005 100000. 100000. 100000.)
+    xi_c=(0.005 100000. 100000. 100000.)
+    xi_j=(0.005 0.005 0.075 0.150)
+    xi_d=(0.005 100000. 100000. 100000.)
+    xi_g=(0.005 0.005 0.075 0.150)
 else
   echo "No valid condition set"
   exit 1
 fi
 
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.075 100000. 100000. 100000.)
-# xi_c=(100000. 0.075 100000. 100000.)
-# xi_j=(100000. 100000. 0.075 100000.)
-# xi_d=(100000. 100000. 100000. 0.075)
-# xi_g=(100000. 100000. 0.075 100000.)
-
-# xi_a=(100000. 100000. 100000. 100000.)
-# xi_k=(0.150 100000. 100000. 100000.)
-# xi_c=(100000. 0.150 100000. 100000.)
-# xi_j=(100000. 100000. 0.150 100000.)
-# xi_d=(100000. 100000. 100000. 0.150)
-# xi_g=(100000. 100000. 0.150 100000.)
-
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.025  0.050 100000.)
-# xi_c=(0.025  0.050 100000.)
-# xi_j=(0.025  0.050 100000.)
-# xi_d=(0.025  0.050 100000.)
-# xi_g=(0.025  0.050 100000.)
-
-
-# xi_a=(100000. 100000. 100000.)
-# xi_k=(0.075  0.150 100000.)
-# xi_c=(0.075  0.150 100000.)
-# xi_j=(0.075  0.150 100000.)
-# xi_d=(0.075  0.150 100000.)
-# xi_g=(0.075  0.150 100000.)
-
-
-
 varrhoarr=(1120)
-# varrhoarr=(448)
-
-
-
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.015 0.010 0.010)
-
-# rhoarr=(0.66 1 1.5)
-# deltaarr=(0.010 0.010 0.010)
-
-
-# rhoarr=(0.66)
-# deltaarr=(0.010)
-
 
 rhoarr=(1)
 deltaarr=(0.010)
@@ -119,12 +81,8 @@ LENGTH_rho=$((${#rhoarr[@]} - 1))
 
 psi0arr=(0.105830)
 
-# phi0arr=(0.05 0.1 0.2 0.3 0.4 0.5)
-# phi0arr=(0.05 0.1 0.2 0.5)
-# phi0arr=(0.05 0.1 0.5)
-# phi0arr=(0.1 0.5)
 phi0arr=(0.5)
-# phi0arr=(0.1)
+
 LENGTH_phi0=$((${#phi0arr[@]} - 1))
 
 
@@ -142,8 +100,6 @@ interp_action_name="2jump_step_0.2_0.2_0.2_LR_0.01"
 fstr_SG="NearestNDInterpolator"
 
 
-# id_sub=19
-
 for epsilon in ${epsilonarray[@]}; do
 	for hXarri in "${hXarrays[@]}"; do
         for phi0index in $(seq 0 $LENGTH_phi0); do
@@ -152,9 +108,6 @@ for epsilon in ${epsilonarray[@]}; do
 		declare -n hXarr="$hXarri"
 
 		action_name="2jump_step_${Xminarr[0]},${Xmaxarr[0]}_${Xminarr[1]},${Xmaxarr[1]}_${Xminarr[2]},${Xmaxarr[2]}_${Xminarr[3]},${Xmaxarr[3]}_SS_${hXarr[0]},${hXarr[1]},${hXarr[2]}_LR_${epsilon}_Current_phi0_${phi0arr[$phi0index]}"
-
-
-		
 
 		epsilonarr=(0.01 0.025)
 		fractionarr=(0.01 0.025)
@@ -166,7 +119,7 @@ for epsilon in ${epsilonarray[@]}; do
 						for j in $(seq 0 $LENGTH_xi); do
 							for k in $(seq 0 $LENGTH_rho); do
 
-								mkdir -p ./job-outs3/${action_name}/Post_Sub2/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/
+								mkdir -p ./job-outs/${action_name}/Post_Sub2/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/
 
 								if [ -f ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh ]; then
 									rm ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh
@@ -181,8 +134,8 @@ for epsilon in ${epsilonarray[@]}; do
 
 ######## login
 #SBATCH --job-name=${Xminarr[1]}_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_${rhoarr[$k]}_phi0_${phi0arr[$phi0index]}_${i}_${epsilon}
-#SBATCH --output=./job-outs3/${action_name}/Post_Sub2/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_sub2<-${id_sub}.out
-#SBATCH --error=./job-outs3/${action_name}/Post_Sub2/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_sub2<-${id_sub}.err
+#SBATCH --output=./job-outs/${action_name}/Post_Sub2/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_sub2<-${id_sub}.out
+#SBATCH --error=./job-outs/${action_name}/Post_Sub2/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_sub2<-${id_sub}.err
 
 #SBATCH --account=pi-lhansen
 #SBATCH --partition=standard

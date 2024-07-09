@@ -115,8 +115,10 @@ phi_0 = args.phi_0
     
 if len(xicarr)==4 and min(xikarr)==0.150:
     labellist = ['Climate Uncertainty', 'Damage Uncertainty', 'Productivity Uncertainty', 'Technology Uncertainty']
+    labellist2 = ['Climate Uncertainty', 'Damage Uncertainty', 'Productivity Uncertainty', 'Technology Uncertainty']
     Filename = 'Uncertainty Channels Less'
     colors = ['blue','red', 'green', 'cyan', 'purple']
+
     
 if len(xicarr)==2 and min(xikarr)==0.150:
     labellist = ['Productivity Uncertainty', 'Neutrality']
