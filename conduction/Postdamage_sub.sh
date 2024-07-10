@@ -1,9 +1,9 @@
 #! /bin/bash
-current_dir=$(pwd)
+source ./setting/environment_setup.sh
 epsilonarray=(0.1) 
 python_name="Postdamage_sub.py" 
 python_dir="./python/"
-output_dir="/scratch/pengyu/"
+output_dir=$output_dir
 NUM_DAMAGE=20
 ID_MAX_DAMAGE=$((NUM_DAMAGE - 1))
 maxiterarr=(2000000 30000)
@@ -126,10 +126,14 @@ for epsilon in ${epsilonarray[@]}; do
 								fi
 
 								mkdir -p ./bash/${action_name}/
+                                    
+								job_file="./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh"
 
-								touch ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh
+								# Explicitly create the job file
+								touch $job_file
 
-								tee -a ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh <<EOF
+								# Append SLURM settings and the rest of the script to the job file
+								tee -a $job_file <<EOF
 #! /bin/bash
 
 ######## login
@@ -137,15 +141,10 @@ for epsilon in ${epsilonarray[@]}; do
 #SBATCH --output=./job-outs/${action_name}/Post_Sub2/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_sub2<-${id_sub}.out
 #SBATCH --error=./job-outs/${action_name}/Post_Sub2/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_sub2<-${id_sub}.err
 
-#SBATCH --account=pi-lhansen
-#SBATCH --partition=standard
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=1G
-#SBATCH --time=7-00:00:00
-##SBATCH --exclude=mcn53,mcn52,mcn51,mcn08
+EOF
 
-####### load modules
-module load python/booth/3.10  gcc/9.2.0
+								cat ./setting/server_settings.sh >> $job_file
+								tee -a $job_file <<EOF
 
 echo "\$SLURM_JOB_NAME"
 
@@ -166,7 +165,7 @@ eval "echo Elapsed time: \$(date -ud "@\$elapsed" +'\$((%s/3600/24)) days %H hr 
 
 EOF
 									count=$(($count + 1))
-									sbatch ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh
+									sbatch $job_file
 								done
 							done
 						done

@@ -1,9 +1,9 @@
 #! /bin/bash
-
+source ./setting/environment_setup.sh
+output_dir=$output_dir
 epsilonarray=(0.1) 
 python_name="Postdamage_NewPlug.py" 
 python_dir="./python/"
-output_dir="/scratch/pengyu/"
 NUM_DAMAGE=20
 ID_MAX_DAMAGE=$((NUM_DAMAGE - 1))
 maxiterarr=(2000000 30000)
@@ -89,9 +89,11 @@ for epsilon in ${epsilonarray[@]}; do
 
 								mkdir -p ./bash/${action_name}/
 
-								touch ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh
+								job_file="./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh"
 
-								tee -a ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh <<EOF
+								touch $job_file
+								
+								tee -a $job_file <<EOF
 #! /bin/bash
 
 ######## login
@@ -99,15 +101,10 @@ for epsilon in ${epsilonarray[@]}; do
 #SBATCH --output=./job-outs/${action_name}/Post/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_subs.out
 #SBATCH --error=./job-outs/${action_name}/Post/xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}/mercury_post_${i}_subs.err
 
-#SBATCH --account=pi-lhansen
-#SBATCH --partition=standard
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=1G
-#SBATCH --time=7-00:00:00
-#SBATCH --exclude=mcn53,mcn55,mcn57,mcn08
+EOF
 
-####### load modules
-module load python/booth/3.10  gcc/9.2.0
+								cat ./setting/server_settings.sh >> $job_file
+								tee -a $job_file <<EOF
 
 echo "\$SLURM_JOB_NAME"
 
@@ -128,7 +125,7 @@ eval "echo Elapsed time: \$(date -ud "@\$elapsed" +'\$((%s/3600/24)) days %H hr 
 
 EOF
 									count=$(($count + 1))
-									sbatch ./bash/${action_name}/hX_${hXarr[0]}_xia_${xi_a[$j]}_xik_${xi_k[$j]}_xic_${xi_c[$j]}_xij_${xi_j[$j]}_xid_${xi_d[$j]}_xig_${xi_g[$j]}_xia2_${xi_a2[$j]}_xik2_${xi_k2[$j]}_xic2_${xi_c2[$j]}_xij2_${xi_j2[$j]}_xid2_${xi_d2[$j]}_xig2_${xi_g2[$j]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$k]}_delta_${deltaarr[$k]}_ID_${i}.sh
+									sbatch $job_file
 								done
 							done
 						done

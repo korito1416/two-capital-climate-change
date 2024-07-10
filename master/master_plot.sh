@@ -1,4 +1,5 @@
 
+bash ./conduction/baseline_plot.sh
 
 ## Figure 6,7 and Table 2 FK
 bash ./conduction/FeymannKacs_plot_composite.sh

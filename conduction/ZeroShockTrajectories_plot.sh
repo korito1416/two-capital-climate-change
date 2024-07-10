@@ -1,11 +1,12 @@
 #! /bin/bash
-
+source ./setting/environment_setup.sh
+output_dir=$output_dir
 actiontime=1
 epsilonarraypost=(0.1) 
 python_name_unit="ZeroShockTrajectories_plot.py"
-current_dir=$(pwd)
+
 python_dir="./python"
-output_dir="/scratch/pengyu/"
+
 NUM_DAMAGE=20
 
 declare -A hXarr1=([0]=0.2 [1]=0.2 [2]=0.2)
@@ -135,9 +136,11 @@ for epsilonpost in ${epsilonarraypost[@]}; do
                     fi
                     mkdir -p ./bash/${action_name}/
 
-                    touch ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
+                    job_file="./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh"
 
-                    tee -a ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh <<EOF
+                    touch $job_file
+                    
+                    tee -a $job_file <<EOF
 #! /bin/bash
 
 
@@ -146,15 +149,11 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 #SBATCH --output=./job-outs/${action_name}/Graph_Plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_${HJBsolution_array[$k]}_${python_name_unit}.out
 #SBATCH --error=./job-outs/${action_name}/Graph_Plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}/graph_${HJBsolution_array[$k]}_${python_name_unit}.err
 
-#SBATCH --account=pi-lhansen
-#SBATCH --partition=standard
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
-#SBATCH --time=7-00:00:00
-#SBATCH --exclude=mcn59
+EOF
 
-####### load modules
-module load python/booth/3.10  gcc/9.2.0
+                    cat ./setting/server_settings.sh >> $job_file
+                    tee -a $job_file <<EOF
+									
 
 
 echo "\$SLURM_JOB_NAME"
@@ -173,7 +172,7 @@ eval "echo Elapsed time: \$(date -ud "@\$elapsed" +'\$((%s/3600/24)) days %H hr 
 
 EOF
 
-                    sbatch ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
+                    sbatch $job_file
 
                     done
                 done
