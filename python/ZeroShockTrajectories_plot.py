@@ -2235,9 +2235,9 @@ for id_xiag in range(len(xiaarr)):
 
                 plt.figure(figsize=(16,10))
 
-                plt.hist(theta_ell, weights=pi_c_o, bins=np.linspace(0.8, 3., 16), density=True, 
+                plt.hist(theta_ell, weights=pi_c_o, bins=np.arange(0.9, 2.85, 0.15), density=True, 
                         alpha=0.5, ec="darkgrey", color="C3",label='Baseline')
-                plt.hist(theta_ell_new*1000, weights=pi_c, bins=np.linspace(0.8, 3., 16), density=True, 
+                plt.hist(theta_ell_new*1000, weights=pi_c, bins=np.arange(0.9, 2.85, 0.15), density=True, 
                         alpha=0.5, ec="darkgrey", color="C0",label=labellist[id_xiag]  )
                 # plt.hist(theta_ell, weights=pi_c, bins=np.linspace(0.8, 3., 16), density=True, 
                 #         alpha=0.5, ec="darkgrey", color="C0",label=labellist[id_xiag]  )

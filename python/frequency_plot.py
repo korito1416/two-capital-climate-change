@@ -25,7 +25,7 @@ def plot_hist(graph_title):
 
     # Create the histogram
     plt.figure(figsize=(8, 6))
-    plt.hist(theta_list * 1000, bins=np.arange(0.8, 3.15, 0.15), density=True, 
+    plt.hist(theta_list * 1000, bins=np.arange(0.9, 2.85, 0.15), density=True, 
              color="red", edgecolor='grey', linewidth=1, alpha=0.5)
 
     # Customize the plot
