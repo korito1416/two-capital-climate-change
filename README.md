@@ -78,9 +78,10 @@ We propose decompositions when the nature of this uncertainty is broadly conceiv
 
 These are instructions on setting up your project locally. Please follow these simple steps.
 
+0. Clone git repository and move into `two-capital-climate-change/`
+
 ### Installation
 
-0. Clone git repository and move into `two-capital-climate-change/`
 
 On Windows, please follow from [step 1](#step-1). On Linux, please jump to [step 4](#step-4).
 
@@ -160,7 +161,7 @@ $ pip install ./src/cppcore
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Server set up and steps to run the code
+## Server set up and steps to run the code
 When you install the above packages successfully, here are the steps you need to do to run the code.
 
 1. Open the file `./setting/environment_setup.sh`
@@ -186,14 +187,27 @@ When you install the above packages successfully, here are the steps you need to
 ## List of tables and programs 
 ---------------------------
 
-The provided code reproduces:
+The provided code reproduces all tables and figures in the paper. You can use the table below to find the corresponding results.
 
-- All tables and figures in the paper
-
-|Fig,/Table| Output folder                                                                   |
-|----------|---------------------------------------------------------------------------------|
-| Table 1  | job-outs/../Graph_Plot/../graph_direct_ZeroShockTrajectories_plot.py.out        |
-| Figure 5 | figure/Gamma3_0,Aversion IntensityLess Aversion_rho=1.0_delta=0.01_phi0=0.5.png |
+|Fig,/Table| Output folder                                                                     |
+|----------|-----------------------------------------------------------------------------------|
+| Table 1  | ./job-outs/..Current/Graph_Plot/../graph_direct_ZeroShockTrajectories_plot.py.out        |
+| Figure 1 | ./figure/baseline/Climate_Sentivity.png                                           |
+| Figure 2 | ./figure/baseline/Temperature Anomaly.png                                         |
+| Figure 3 | ./figure/baseline/Intensity Function.png                                          |
+| Figure 5 | ./figure/..Current/Gamma3_0,Aversion IntensityLess Aversion_rho=1.0_delta=0.01_phi0=0.5.png |
+| Figure 6 | ./figure/..Current/AversionDiffCompositeTechnology0.083_Discount_nodeltadt_Processs_dt.pdf  |
+| Figure 7(A) | ./figure/..Current/AversionDiffCompositeTechnology0.083_Discount_nodeltadt_tech_Processs_dt.pdf|
+| Figure 7(B) | ./figure/..Current/AversionDiffCompositeTechnology0.083_Discount_nodeltadt_damage_Processs_dt.pdf|
+| Table 2  | ./job-outs/..Current/Graph_Simulate_plot/../graph_FeymannKacs_plot_Composite.py_55_Technology_0.075.out|
+| Table 3  | ./job-outs/..Current/graph-table/graph_direct_DateValueReport_Table.py.out   |
+| Figure 8(A) | ./figure/..Current/RDstoc_Aversion Intensity_rho=1.0_delta=0.01.png     |
+| Figure 8(B) | ./figure/..Current/Estoc_Aversion Intensity_rho=1.0_delta=0.01.png     |
+| Table 4  | ./job-outs/..NewPlug/graph_FeymannKacs_plot_NewPlug_Composite.py_55_Technology_100000._0.150|
+| Figure 10(A) | ./figure/..NewPlug/All Channel OnPre Less Aversion Post Less AversionTechnology0.083_Discount_Term1234_dt2.pdf|
+| Figure 10(B) | ./figure/..NewPlug/All Channel OnPre Less Aversion Post NeutralityTechnology0.083_Discount_Term1234_dt2.pdf|
+| Figure 10(C) | ./figure/..NewPlug/All Channel OnPre Neutrality Post Less AversionTechnology0.083_Discount_Term1234_dt2.pdf|
+| Figure 10(D) | ./figure/..NewPlug/All Channel OnPre Neutrality Post NeutralityTechnology0.083_Discount_Term1234_dt2.pdf|
 
 
 
