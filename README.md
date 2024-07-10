@@ -22,7 +22,7 @@
   <!-- <h4 align="center">Authors: Michael Barnett, William Brock, Lars Peter Hansen, Hong Zhang</h4> -->
 
   <p align="center">
-    Supporter: <a href="https://www.linkedin.com/in/bin-h-cheng/" target="_blank">Bin Cheng</a>
+    Supporter: <a href="https://www.linkedin.com/in/bin-h-cheng/" target="_blank">Bin Cheng</a>, Pengyu Chen, Haoyang Sun
     <br />
     <!-- <a href="https://github.com/binchengecon/TwoCapital_Final.git"><strong>Explore the docs »</strong></a> <a href="Mitigation.pdf"><strong>View the paper</strong></a> -->
     <a href="https://climatesocialpolicy.readthedocs.io/en/latest/"><strong>Explore the docs</strong></a> · <a href="docs/Mitigation.pdf"><strong>View the paper</strong></a>
@@ -80,6 +80,7 @@ These are instructions on setting up your project locally. Please follow these s
 
 ### Installation
 
+0. Clone git repository and move into `two-capital-climate-change/`
 
 On Windows, please follow from [step 1](#step-1). On Linux, please jump to [step 4](#step-4).
 
@@ -158,6 +159,42 @@ $ pip install ./src/cppcore
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Server set up and steps to run the code
+When you install the above packages successfully, here are the steps you need to do to run the code.
+
+1. Open the file `./setting/environment_setup.sh`
+   Change the `output_dir` to the folder you want.
+   Please leave enough space for the code.
+
+2. Open the file `./setting/server_setting.sh`
+   Current version of our package can only run on a server.
+   Please replace the settings with the server you used.
+   Also update the module name. Please use the most cloest version.
+
+3. After setting up all the environments, you can run the following code line by line:
+   ```sh
+   bash master/master_zero_shock.sh
+   bash master/master_FK.sh
+   bash master/master_sto.sh
+   bash master/master_plugin.sh
+   bash master/master_plot.sh
+   ```
+   Note you need to wait until the previous bash file is finished to run the next one.
+
+
+## List of tables and programs 
+---------------------------
+
+The provided code reproduces:
+
+- All tables and figures in the paper
+
+|Fig,/Table| Output folder                                                                   |
+|----------|---------------------------------------------------------------------------------|
+| Table 1  | job-outs/../Graph_Plot/../graph_direct_ZeroShockTrajectories_plot.py.out        |
+| Figure 5 | figure/Gamma3_0,Aversion IntensityLess Aversion_rho=1.0_delta=0.01_phi0=0.5.png |
+
 
 
 

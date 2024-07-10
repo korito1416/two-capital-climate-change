@@ -2254,6 +2254,6 @@ for id_xiag in range(len(xiaarr)):
                 # plt.xlabel("Climate Sensitivity")
                 # plt.savefig(Plot_Dir+"/ClimateSensitivity_pmean_{},xia={:.5f},xik={:.3f},xic={:.3f},xij={:.3f},xid={:.3f},xig={:.3f},psi0={:.3f},psi1={:.3f},varrho={:.1f}\%_rho={}_delta={}_phi0={}.pdf".format(plot_year_theta, xiaarr[id_xiag],xikarr[id_xiag],xicarr[id_xiag],xijarr[id_xiag],xidarr[id_xiag],xigarr[id_xiag],psi0arr[id_psi0],psi1arr[id_psi1], varrhoarr[id_varrho],rho,delta,phi_0))
                 # plt.savefig(Plot_Dir+"/ClimateSensitivity_pmean_{},xia={:.5f},xik={:.3f},xic={:.3f},xij={:.3f},xid={:.3f},xig={:.3f},psi0={:.3f},psi1={:.3f},varrho={:.1f}\%_rho={}_delta={}_phi0={}.png".format(plot_year_theta, xiaarr[id_xiag],xikarr[id_xiag],xicarr[id_xiag],xijarr[id_xiag],xidarr[id_xiag],xigarr[id_xiag],psi0arr[id_psi0],psi1arr[id_psi1], varrhoarr[id_varrho],rho,delta,phi_0))
-                plt.savefig(Plot_Dir+"/ClimateSensitivity_pmean_{},".format(plot_year_theta) +Filename+labellist2[id_xiag]+"_rho={}_delta={}_phi0={}.png".format(rho,delta,phi_0))
-                plt.savefig(Plot_Dir+"/ClimateSensitivity_pmean_{},".format(plot_year_theta) +Filename+labellist2[id_xiag]+"_rho={}_delta={}_phi0={}.pdf".format(rho,delta,phi_0))
+                plt.savefig(Plot_Dir+"/ClimateSensitivity_pmean_{},xic={:.3f}".format(plot_year_theta,xicarr[id_xiag]) +Filename+labellist2[id_xiag]+"_rho={}_delta={}_phi0={}.png".format(rho,delta,phi_0))
+                plt.savefig(Plot_Dir+"/ClimateSensitivity_pmean_{},xic={:.3f}".format(plot_year_theta,xicarr[id_xiag]) +Filename+labellist2[id_xiag]+"_rho={}_delta={}_phi0={}.pdf".format(rho,delta,phi_0))
                 plt.close()

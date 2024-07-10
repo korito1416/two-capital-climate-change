@@ -1,12 +1,11 @@
 #! /bin/bash
-
+source ./setting/environment_setup.sh
+output_dir=$output_dir
 epsilonarraypost=(0.1) 
 NUM_DAMAGE=20
 
 python_name_unit="FeymannKacs_plot_Composite.py"
-current_dir=$(pwd)
 python_dir="./python"
-output_dir="/scratch/pengyu/"
 declare -A hXarr1=([0]=0.2 [1]=0.2 [2]=0.2)
 declare -A hXarr2=([0]=0.1 [1]=0.1 [2]=0.1)
 hXarrays=(hXarr1)
@@ -84,10 +83,11 @@ for epsilonpost in ${epsilonarraypost[@]}; do
                         rm ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
                     fi
                     mkdir -p ./bash/${action_name}/
+                    job_file="./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh"
+                    touch $job_file
+                    
+                    tee -a $job_file <<EOF
 
-                    touch ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
-
-                    tee -a ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh <<EOF
 #! /bin/bash
 
 
@@ -96,15 +96,10 @@ for epsilonpost in ${epsilonarraypost[@]}; do
 #SBATCH --output=./job-outs/${action_name}/Graph_Simulate_plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/graph_${python_name_unit}_${year}_${m0_array}_${xi_j[0]}.out
 #SBATCH --error=./job-outs/${action_name}/Graph_Simulate_plot/scheme_${scheme_array[$k]}_HJB_${HJBsolution_array[$k]}/graph_${python_name_unit}_${year}_${m0_array}_${xi_j[0]}.err
 
-#SBATCH --account=pi-lhansen
-#SBATCH --partition=highmem
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=52G
-#SBATCH --time=0-02:00:00
-#SBATCH --exclude=mcn53,mcn55,mcn57,mcn08
+EOF
 
-####### load modules
-module load python/booth/3.10  gcc/9.2.0
+                    cat ./setting/server_settings.sh >> $job_file
+                    tee -a $job_file <<EOF
 
 
 echo "\$SLURM_JOB_NAME"
@@ -123,7 +118,7 @@ eval "echo Elapsed time: \$(date -ud "@\$elapsed" +'\$((%s/3600/24)) days %H hr 
 
 EOF
 
-                    sbatch ./bash/${action_name}/hX_${hXarr[0]}_PSI0_${PSI_0}_PSI1_${PSI_1}_varrho_${varrho}_rho_${rhoarr[$kk]}_delta_${deltaarr[$kk]}_Graph.sh
+                    sbatch $job_file
 
                                     done
                                 done
