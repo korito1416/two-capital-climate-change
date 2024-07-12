@@ -19,7 +19,7 @@ sleep 1800
 bash ./conduction/StocasticTrajectories_plot.sh "false" "false" "true"
 
 # Table 4
-bash ./conduction/FeymannKacs_plot_composite_NewPlug.sh
+bash ./conduction/FeymannKacs_plot_composite_NewPlug.sh "4"
 
 # Figure 10
 bash ./conduction/FeymannKacs_plot_NewPlug.sh

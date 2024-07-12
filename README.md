@@ -180,6 +180,9 @@ When you install the above packages successfully, here are the steps you need to
    bash master/master_sto.sh
    bash master/master_plugin.sh
    bash master/master_plot.sh
+   bash master/master_appendix_1.sh
+   bash master/master_appendix_2.sh
+   bash master/master_appendix_3.sh
    ```
    Note you need to wait until the previous bash file is finished to run the next one.
 
@@ -203,14 +206,18 @@ The provided code reproduces all tables and figures in the paper. You can use th
 | Table 3  | ./job-outs/..Current/graph-table/graph_direct_DateValueReport_Table.py.out   |
 | Figure 8(A) | ./figure/..Current/RDstoc_Aversion Intensity_rho=1.0_delta=0.01.png     |
 | Figure 8(B) | ./figure/..Current/Estoc_Aversion Intensity_rho=1.0_delta=0.01.png     |
-| Table 4  | ./job-outs/..NewPlug/graph_FeymannKacs_plot_NewPlug_Composite.py_55_Technology_100000._0.150|
+| Table 4  | ./job-outs/..NewPlug/graph_FeymannKacs_plot_NewPlug_Composite.py_55_Technology_100000._0.150.out|
 | Figure 10(A) | ./figure/..NewPlug/All Channel OnPre Less Aversion Post Less AversionTechnology0.083_Discount_Term1234_dt2.pdf|
 | Figure 10(B) | ./figure/..NewPlug/All Channel OnPre Less Aversion Post NeutralityTechnology0.083_Discount_Term1234_dt2.pdf|
 | Figure 10(C) | ./figure/..NewPlug/All Channel OnPre Neutrality Post Less AversionTechnology0.083_Discount_Term1234_dt2.pdf|
 | Figure 10(D) | ./figure/..NewPlug/All Channel OnPre Neutrality Post NeutralityTechnology0.083_Discount_Term1234_dt2.pdf|
-
-
-
+| Figure 11(A) | ./figure/..Current/RDstoc_Aversion Intensity_Extreme_rho=1.0_delta=0.01.png|
+| Figure 11(B) | ./figure/..Current/Estoc_Aversion Intensity_Extreme_rho=1.0_delta=0.01.png |
+| Figure 11(C) | ./figure/..Current/RDstoc_R&D Channel on_rho=1.0_delta=0.01.png|
+| Figure 11(D) | ./figure/..Current/Estoc_R&D Channel on_rho=1.0_delta=0.01.png|
+| Table 9      | ./job-outs/..NewPlug/graph_FeymannKacs_plot_NewPlug_Composite.py_55_Technology_0.150._0.150.out|
+| Table 10      | ./job-outs/..NewPlug/graph_FeymannKacs_plot_NewPlug_Composite.py_55_Technology_100000._0.075.out|
+| Table 11      | ./job-outs/..NewPlug/graph_FeymannKacs_plot_NewPlug_Composite.py_55_Technology_100000._0.005.out|
 
 <!-- ROADMAP -->
 ## Roadmap
