@@ -9,5 +9,3 @@ bash ./conduction/FeymannKacs_prepare_NewPlug.sh "10"
 sleep 120
 
 bash ./conduction/FeymannKacs_simulate_NewPlug.sh "10"
-sleep 10800
-bash ./conduction/FeymannKacs_plot_composite_NewPlug.sh "10"
