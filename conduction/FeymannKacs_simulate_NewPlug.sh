@@ -73,8 +73,20 @@ elif [ "$Table" = 11 ]; then
 	xi_d2=(100000. 100000. 100000. 100000.)
 	xi_g2=(100000. 100000. 0.005 0.005)
 else
-    echo "No valid condition set"
-    exit 1
+    # echo "No valid condition set"
+    # exit 1
+	xi_a=(100000. 100000. 100000.)
+	xi_k=(100000. 0.150 0.075 )
+	xi_c=(100000. 0.150 0.075)
+	xi_j=(100000. 0.150 0.075)
+	xi_d=(100000. 0.150 0.075 )
+	xi_g=(100000. 0.150 0.075)
+	xi_a2=(100000. 100000. 100000.)
+	xi_k2=(100000. 0.150 0.075 )
+	xi_c2=(100000. 0.150 0.075 )
+	xi_j2=(100000. 0.150 0.075 )
+	xi_d2=(100000. 0.150 0.075 )
+	xi_g2=(100000. 0.150 0.075 )
 fi
 
 varrhoarr=(1120)
@@ -129,8 +141,8 @@ HJBsolution_array=("direct")
 LENGTH_scheme=$((${#scheme_array[@]} - 1))
 
 
-# m0_array="Temperature"
-m0_array="Technology"
+m0_array="Temperature"
+# m0_array="Technology"
 
 LENGTH_m0_array=$((${#m0_array[@]} - 1))
 for epsilonpost in ${epsilonarraypost[@]}; do

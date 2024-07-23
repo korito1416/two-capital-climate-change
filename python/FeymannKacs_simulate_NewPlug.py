@@ -691,6 +691,10 @@ def simulate_pre(data, Data_Dir, File_Dir):
     first_terms = []
     first_term_fs = []
     second_terms = []
+    second_term_1s = []
+    second_term_2s = []
+    second_term_3s = []
+    second_term_4s = []
     third_term_1s = []
     third_term_2s = []
     third_term_3s = []
@@ -861,6 +865,10 @@ def simulate_pre(data, Data_Dir, File_Dir):
             first_term_f = np.zeros(N)
             first_term_f2 = np.zeros(N)
             second_term = np.zeros(N)
+            second_term_1 = np.zeros(N)
+            second_term_2 = np.zeros(N)
+            second_term_3 = np.zeros(N)
+            second_term_4 = np.zeros(N)            
             third_term_1 = np.zeros(N)
             third_term_2 = np.zeros(N)
             third_term_3 = np.zeros(N)
@@ -900,6 +908,7 @@ def simulate_pre(data, Data_Dir, File_Dir):
 
             first_term2 = np.zeros(N)
             second_term2 = np.zeros(N)
+
             third_term_12 = np.zeros(N)
             third_term_22 = np.zeros(N)
             third_term_32 = np.zeros(N)
@@ -1026,6 +1035,11 @@ def simulate_pre(data, Data_Dir, File_Dir):
                             dj2_dx2_process[0]*np.mean(damage_process[:,0]*(v2_process[:,0] - va_process[0]),axis=0)*m2_process[0]+\
                             dj3_dx3_process[0]*tech_process[0]*(v3_process[0] - va_process[0])*m3_process[0]+\
                             dj4_dx4_process[0]*(v4_process[0] - va_process[0])*m4_process[0]
+            second_term_1[0] = dj1_dx1_process[0]*(v1_process[0] - va_process[0])*m1_process[0]
+            second_term_2[0] = dj2_dx2_process[0]*np.mean(damage_process[:,0]*(v2_process[:,0] - va_process[0]),axis=0)*m2_process[0]
+            second_term_3[0] = dj3_dx3_process[0]*tech_process[0]*(v3_process[0] - va_process[0])*m3_process[0]
+            second_term_4[0] = dj4_dx4_process[0]*(v4_process[0] - va_process[0])*m4_process[0]
+
             third_term_1[0] = j1_process[0]*(dv1_dx1_process[0])*m1_process[0]+\
                             j1_process[0]*(dv1_dx2_process[0])*m2_process[0]+\
                             j1_process[0]*(dv1_dx3_process[0])*m3_process[0]+\
@@ -1308,6 +1322,13 @@ def simulate_pre(data, Data_Dir, File_Dir):
                             dj2_dx2_process[t+1]*np.mean(damage_process[:,t+1]*(v2_process[:,t+1] - va_process[t+1]),axis=0)*m2_process[t+1]+\
                             dj3_dx3_process[t+1]*tech_process[t+1]*(v3_process[t+1] - va_process[t+1])*m3_process[t+1]+\
                             dj4_dx4_process[t+1]*(v4_process[t+1] - va_process[t+1])*m4_process[t+1]
+                
+                second_term_1[t+1] = dj1_dx1_process[t+1]*(v1_process[t+1] - va_process[t+1])*m1_process[t+1]
+                second_term_2[t+1] = dj2_dx2_process[t+1]*np.mean(damage_process[:,t+1]*(v2_process[:,t+1] - va_process[t+1]),axis=0)*m2_process[t+1]
+                second_term_3[t+1] = dj3_dx3_process[t+1]*tech_process[t+1]*(v3_process[t+1] - va_process[t+1])*m3_process[t+1]
+                second_term_4[t+1] = dj4_dx4_process[t+1]*(v4_process[t+1] - va_process[t+1])*m4_process[t+1]
+
+
                 third_term_1[t+1] = j1_process[t+1]*(dv1_dx1_process[t+1])*m1_process[t+1]+\
                                 j1_process[t+1]*(dv1_dx2_process[t+1])*m2_process[t+1]+\
                                 j1_process[t+1]*(dv1_dx3_process[t+1])*m3_process[t+1]+\
@@ -1473,6 +1494,10 @@ def simulate_pre(data, Data_Dir, File_Dir):
             first_terms.append(first_term)
             # first_term_fs.append(first_term_f)
             second_terms.append(second_term)
+            second_term_1s.append(second_term_1)
+            second_term_2s.append(second_term_2)
+            second_term_3s.append(second_term_3)
+            second_term_4s.append(second_term_4)
             third_term_1s.append(third_term_1)
             third_term_2s.append(third_term_2)
             third_term_3s.append(third_term_3)
@@ -1538,7 +1563,8 @@ def simulate_pre(data, Data_Dir, File_Dir):
                 discount_factor_temp=discount_factor_temp_processes, discount_factor=discount_factor_processes, \
                 discount_factor_nodelta=discount_factor_nodelta_processes, discount_factor_nodelta_DisSep_Damage=discount_factor_nodelta_DisSep_Damage_processes, discount_factor_nodelta_DisSep_Tech=discount_factor_nodelta_DisSep_Tech_processes, \
                 discount_factor_nodeltadt=discount_factor_nodeltadt_processes, discount_factor_nodeltadt_DisSep_Damage = discount_factor_nodeltadt_DisSep_Damage_processes, discount_factor_nodeltadt_DisSep_Tech= discount_factor_nodeltadt_DisSep_Tech_processes, \
-                discount_process=discount_processes)
+                discount_process=discount_processes, \
+                second_term_1=second_term_1s,second_term_2=second_term_2s,second_term_3=second_term_3s,second_term_4=second_term_4s)
                 # first_term2=first_terms2, second_term2=second_terms2, third_term_12=third_term_1s2, third_term_22=third_term_2s2, third_term_32=third_term_3s2, undiscount_process2=undiscount_processes2, discount_factor_temp2=discount_factor_temp_processes2, discount_factor2=discount_factor_processes2, discount_process2=discount_processes2)
         print('Data saved')
 

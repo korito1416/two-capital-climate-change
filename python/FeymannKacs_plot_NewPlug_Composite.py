@@ -245,6 +245,10 @@ elif min(xij2arr)==0.150 and min(xik2arr)==0.150 :
 
     Filename = 'All Channel On Less'
 
+elif min(xij2arr)==0.075 and min(xik2arr)==0.075:
+    labellist = [r'$\xi=\infty$', r'$\xi=0.150$', r'$\xi=0.075$', 'pre neutrality post neutrality']
+    Filename = 'Aversion Intensity_More'
+
 print("define success")
 
 # Filename = 'Aversion Intensity_old'
@@ -357,6 +361,11 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
     dv_dx4_processes = np.empty((0,N))
     first_terms = np.empty((0,N))
     second_terms = np.empty((0,N))
+    second_term_1s = np.empty((0,N))
+    second_term_2s = np.empty((0,N))
+    second_term_3s = np.empty((0,N))
+    second_term_4s = np.empty((0,N))
+
     third_term_1s = np.empty((0,N))
     third_term_2s = np.empty((0,N))
     third_term_3s = np.empty((0,N))
@@ -471,6 +480,11 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
         dv_dx4_process = simbatch['dv_dx4_process']
         first_term = simbatch['first_term']
         second_term = simbatch['second_term']
+        second_term_1 = simbatch['second_term_1']
+        second_term_2 = simbatch['second_term_2']
+        second_term_3 = simbatch['second_term_3']
+        second_term_4 = simbatch['second_term_4']
+
         third_term_1 = simbatch['third_term_1']
         third_term_2 = simbatch['third_term_2']
         third_term_3 = simbatch['third_term_3']
@@ -566,6 +580,11 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
         dv_dx4_processes = np.concatenate((dv_dx4_processes,dv_dx4_process), axis=0)
         first_terms = np.concatenate((first_terms,first_term), axis=0)
         second_terms = np.concatenate((second_terms,second_term), axis=0)
+        second_term_1s = np.concatenate((second_term_1s,second_term_1), axis=0)
+        second_term_2s = np.concatenate((second_term_2s,second_term_2), axis=0)
+        second_term_3s = np.concatenate((second_term_3s,second_term_3), axis=0)
+        second_term_4s = np.concatenate((second_term_4s,second_term_4), axis=0)
+
         third_term_1s = np.concatenate((third_term_1s,third_term_1), axis=0)
         third_term_2s = np.concatenate((third_term_2s,third_term_2), axis=0)
         third_term_3s = np.concatenate((third_term_3s,third_term_3), axis=0)
@@ -793,6 +812,9 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
     Integral_d = np.trapz(np.mean(discount_factor_nodeltadt_DisSep_Damage_processes, axis=0), time_process)
     Integral_t = np.trapz(np.mean(discount_factor_nodeltadt_DisSep_Tech_processes, axis=0), time_process)
 
+    RHS_summ=np.mean(np.exp(discount_factor_processes)*(delta*first_terms), axis=0)+np.mean(np.exp(discount_factor_processes)*(second_terms), axis=0)+\
+        np.mean(np.exp(discount_factor_processes)*(third_term_1s+third_term_2s+third_term_3s+third_term_4s), axis=0)+np.mean(np.exp(discount_factor_processes)*(fourth_term_entropys), axis=0)
+
     print("###########################################")
     print("Start######################################")
     print(f"shape = {discount_factor_nodeltadt_processes.shape}")
@@ -818,8 +840,14 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
     print(f"Second Year 0={Second_Term_0}, 20={Second_Term_20}, 25={Second_Term_25}, 30={Second_Term_30}, Year 20 Ratio={Second_Term_20/Second_Term_0}, Year 25 Ratio={Second_Term_25/Second_Term_0}, Year 30 Ratio={Second_Term_30/Second_Term_0}")
     print("#########################################")
     print("End######################################")
+    
+    
+    RHS_2a = np.trapz(np.mean(np.exp(discount_factor_processes)*(second_term_2s), axis=0), time_process)
+    RHS_2b = np.trapz(np.mean(np.exp(discount_factor_processes)*(second_term_3s), axis=0), time_process)
+    print(f"RHS_Discounted_2_damage={RHS_2a},RHS_Discounted_2_tech={RHS_2b}")
 
-    return np.mean(np.exp(discount_factor_processes), axis=0), np.mean(np.exp(discount_factor_nodelta_processes),axis=0), np.mean(discount_factor_nodeltadt_processes,axis=0), np.mean(discount_factor_nodelta_processes,axis=0),time_process,np.mean(np.exp(discount_factor_nodelta_DisSep_Damage_processes),axis=0),np.mean(np.exp(discount_factor_nodelta_DisSep_Tech_processes),axis=0),np.mean(discount_factor_nodeltadt_DisSep_Damage_processes,axis=0),np.mean(discount_factor_nodeltadt_DisSep_Tech_processes,axis=0)
+
+    return np.mean(np.exp(discount_factor_processes), axis=0), np.mean(np.exp(discount_factor_nodelta_processes),axis=0), np.mean(discount_factor_nodeltadt_processes,axis=0), np.mean(discount_factor_nodelta_processes,axis=0),time_process,np.mean(np.exp(discount_factor_nodelta_DisSep_Damage_processes),axis=0),np.mean(np.exp(discount_factor_nodelta_DisSep_Tech_processes),axis=0),np.mean(discount_factor_nodeltadt_DisSep_Damage_processes,axis=0),np.mean(discount_factor_nodeltadt_DisSep_Tech_processes,axis=0),RHS_summ
 
 res_list = []
 res2_list = []
@@ -831,13 +859,15 @@ res6_list = []
 res7_list = []
 res8_list = []
 
+res_term2_list=[]
+
 for id_xiag in range(len(xiaarr)): 
     for id_psi0 in range(len(psi0arr)):
         for id_psi1 in range(len(psi1arr)):
             for id_varrho in range(len(varrhoarr)):
                 for id_rho in range(len(rhoarr)):
 
-                    res,  res2, res3, res4, time_process, res_ProbDamage, res_ProbTech, res_probdamage, res_probtech = model_simulation_generate(id_xiag, xiaarr[id_xiag],xikarr[id_xiag],xicarr[id_xiag],xijarr[id_xiag],xidarr[id_xiag],xigarr[id_xiag],xia2arr[id_xiag],xik2arr[id_xiag],xic2arr[id_xiag],xij2arr[id_xiag],xid2arr[id_xiag],xig2arr[id_xiag],rhoarr[id_rho],psi0arr[id_psi0],psi1arr[id_psi1],varrhoarr[id_varrho])
+                    res,  res2, res3, res4, time_process, res_ProbDamage, res_ProbTech, res_probdamage, res_probtech,res_term2 = model_simulation_generate(id_xiag, xiaarr[id_xiag],xikarr[id_xiag],xicarr[id_xiag],xijarr[id_xiag],xidarr[id_xiag],xigarr[id_xiag],xia2arr[id_xiag],xik2arr[id_xiag],xic2arr[id_xiag],xij2arr[id_xiag],xid2arr[id_xiag],xig2arr[id_xiag],rhoarr[id_rho],psi0arr[id_psi0],psi1arr[id_psi1],varrhoarr[id_varrho])
                     
                     res_list.append(res)
                     res2_list.append(res2)
@@ -848,7 +878,8 @@ for id_xiag in range(len(xiaarr)):
                     res6_list.append(res_ProbTech)
                     res7_list.append(res_probdamage)
                     res8_list.append(res_probtech)
-
+                    res_term2_list.append(res_term2)
+                    
 plt.figure()
 for id_xiag in range(len(xiaarr)): 
     plt.plot(time_process,res_list[id_xiag],label=labellist[id_xiag])
@@ -940,3 +971,27 @@ plt.ylim(0, 0.06)
 plt.legend(loc='upper right')
 plt.savefig(Plot_Dir+"/"+Filename+"Composite"+str(m0)+"{:.3f}".format(dt)+"_Discount_nodeltadt_tech_Processs_numerical_dt.pdf")
 plt.close()
+
+
+plt.figure()
+for id_xiag in range(len(xiaarr)): 
+    plt.plot(time_process,res3_list[id_xiag],label=labellist[id_xiag])
+plt.legend(loc='upper right')
+plt.ylim(0, 0.06)
+plt.xlabel("year")
+plt.ylabel("density")
+plt.savefig(Plot_Dir+"/"+Filename+"Composite"+str(m0)+"{:.3f}".format(dt)+"_split.png")
+plt.close()
+
+
+
+plt.figure()
+for id_xiag in range(len(xiaarr)): 
+    plt.plot(time_process,-1*res_term2_list[id_xiag],label=labellist[id_xiag])
+plt.legend(loc='upper right')
+plt.ylim(0, 0.015)
+plt.xlabel("year")
+plt.ylabel("cost")
+plt.savefig(Plot_Dir+"/"+Filename+"Composite"+str(m0)+"{:.3f}".format(dt)+"term2_split.png")
+plt.close()
+

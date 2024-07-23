@@ -79,8 +79,20 @@ elif [ "$Table" = 11 ]; then
 	xi_d2=(100000. 100000. 100000. 100000.)
 	xi_g2=(100000. 100000. 0.005 0.005)
 else
-    echo "No valid condition set"
-    exit 1
+    # echo "No valid condition set"
+    # exit 1
+	xi_a=(100000.)
+	xi_k=(0.075)
+	xi_c=(0.075)
+	xi_j=(0.075)
+	xi_d=(0.075)
+	xi_g=(0.075)
+	xi_a2=(100000.)
+	xi_k2=(0.075)
+	xi_c2=(0.075)
+	xi_j2=(0.075)
+	xi_d2=(0.075)
+	xi_g2=(0.075)
 fi
 
 

@@ -60,7 +60,8 @@ LENGTH_scheme=$((${#scheme_array[@]} - 1))
 auto=1
 year=55
 
-m0_array="Technology"
+m0_array="Temperature"
+# m0_array="Technology"
 
 LENGTH_m0_array=$((${#m0_array[@]} - 1))
 for epsilonpost in ${epsilonarraypost[@]}; do

@@ -256,10 +256,10 @@ n_bar2 = np.abs(Y_short - y_bar).argmin()
 
 
 
-
-
-
-
+if min(xij2arr)==0.075:
+    labellist = ['Pre more Aversion Post more Aversion']
+    Filename = 'All Channel On'
+    print("define success")
 
 
 if min(xij2arr)==0.150 and min(xijarr)>1:
@@ -396,6 +396,12 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
     dv_dx4_processes = np.empty((0,N))
     first_terms = np.empty((0,N))
     second_terms = np.empty((0,N))
+    second_term_1s = np.empty((0,N))
+    second_term_2s = np.empty((0,N))
+    second_term_3s = np.empty((0,N))
+    second_term_4s = np.empty((0,N))
+
+
     third_term_1s = np.empty((0,N))
     third_term_2s = np.empty((0,N))
     third_term_3s = np.empty((0,N))
@@ -507,6 +513,11 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
         dv_dx4_process = simbatch['dv_dx4_process']
         first_term = simbatch['first_term']
         second_term = simbatch['second_term']
+        second_term_1 = simbatch['second_term_1']
+        second_term_2 = simbatch['second_term_2']
+        second_term_3 = simbatch['second_term_3']
+        second_term_4 = simbatch['second_term_4']
+
         third_term_1 = simbatch['third_term_1']
         third_term_2 = simbatch['third_term_2']
         third_term_3 = simbatch['third_term_3']
@@ -600,6 +611,12 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
         dv_dx4_processes = np.concatenate((dv_dx4_processes,dv_dx4_process), axis=0)
         first_terms = np.concatenate((first_terms,first_term), axis=0)
         second_terms = np.concatenate((second_terms,second_term), axis=0)
+        second_term_1s = np.concatenate((second_term_1s,second_term_1), axis=0)
+        second_term_2s = np.concatenate((second_term_2s,second_term_2), axis=0)
+        second_term_3s = np.concatenate((second_term_3s,second_term_3), axis=0)
+        second_term_4s = np.concatenate((second_term_4s,second_term_4), axis=0)
+
+
         third_term_1s = np.concatenate((third_term_1s,third_term_1), axis=0)
         third_term_2s = np.concatenate((third_term_2s,third_term_2), axis=0)
         third_term_3s = np.concatenate((third_term_3s,third_term_3), axis=0)
@@ -770,6 +787,15 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
     plt.savefig(Plot_Dir+"/"+Filename+labellist[id]+str(m0)+"{:.3f}".format(dt)+"_Discount_Term1234_dt2.pdf")
     plt.close()
 
+    plt.figure()
+    plt.plot(time_process, np.mean(np.exp(discount_factor_processes)*(second_terms), axis=0),label = r'ii')
+    plt.legend(loc='upper right')
+    # plt.ylim(0,0.0015)
+    # plt.ylim(0,0.0014)
+    # plt.title(str(m0)+" "+labellist[id])
+    plt.savefig(Plot_Dir+"/"+Filename+labellist[id]+str(m0)+"{:.3f}".format(dt)+"_Discount_Term2_dt2.pdf")
+    plt.close()
+
 
     plt.figure()
     plt.plot(time_process, np.mean(np.exp(discount_factor_processes)*(delta*first_terms), axis=0),label = r'$\delta m \cdot \frac{\partial U}{\partial x}$')
@@ -911,7 +937,7 @@ def model_simulation_generate(id, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,xi_a2,xi_k2,xi_c
     # print(f"RHS_Undiscount_U full+npartialg = {np.sum(np.mean(undiscount_f_pg_processes, axis=0))}, RHS_Discount = {RHS}, LHS = {LHS}, Difference (RHS-LHS)/LHS %= {(RHS-LHS)/LHS*100}")
     # print(f"RHS_Undiscount_Method2 = {np.sum(np.mean(undiscount_processes2, axis=0))}, RHS_Discount_Method2 = {np.sum(np.mean(discount_processes2, axis=0))}, LHS = {np.mean(dv_dx1_processes*m1_processes +dv_dx2_processes*m2_processes + dv_dx3_processes*m3_processes,axis=0)[0]}")
     print(f"dvdY = {np.mean(dv_dx2_processes,axis=0)[0]}, dvdlogIg = {np.mean(dv_dx3_processes,axis=0)[0]}")
-    return np.mean(np.exp(discount_factor_processes), axis=0)
+    return np.mean(np.exp(discount_factor_processes)*(second_term_3s), axis=0)
 
 res_list = []
 
@@ -922,12 +948,21 @@ for id_xiag in range(len(xiaarr)):
                 for id_rho in range(len(rhoarr)):
 
                     res = model_simulation_generate(id_xiag, xiaarr[id_xiag],xikarr[id_xiag],xicarr[id_xiag],xijarr[id_xiag],xidarr[id_xiag],xigarr[id_xiag],xia2arr[id_xiag],xik2arr[id_xiag],xic2arr[id_xiag],xij2arr[id_xiag],xid2arr[id_xiag],xig2arr[id_xiag],rhoarr[id_rho],psi0arr[id_psi0],psi1arr[id_psi1],varrhoarr[id_varrho])
-                    
                     res_list.append(res)
+                    
 
 # plt.figure()
 # for id_xiag in range(len(xiaarr)): 
 #     plt.plot(res_list[id_xiag])
 
-# plt.savefig(Plot_Dir+"/"+Filename+"Composite"+str(m0)+"_MProcesss.pdf")
+# plt.savefig(Plot_Dir+"/"+Filename+"Aggregate"+str(m0)+"_Discount_Term2_dt2.pdf")
 # plt.close()
+
+
+
+# import random
+# random_integer = random.randint(1, 1000)
+name="aggregate_term2"+str(labellist)
+np.savetxt(f'{name}.csv', np.array(res_list).transpose(), delimiter=',', fmt='%s')
+# np.savetxt(f'timeprocess.csv', time_process, delimiter=',', fmt='%s')
+
