@@ -16,7 +16,43 @@ from datetime import datetime
 
 
 def pde_one_interation(ksp, petsc_mat, X1_mat_1d, X2_mat_1d, X3_mat_1d, lowerLims, upperLims, dVec, increVec, v0, A, B_1, B_2, B_3, C_1, C_2, C_3, D, tol, epsilon):
+    """
+    Performs one iteration of solving the PDE using PETSc.
 
+    Parameters:
+    - ksp: PETSc.KSP
+        Krylov Subspace solver object used for solving linear systems.
+    - petsc_mat: PETSc.Mat
+        PETSc matrix representing the linear system to solve.
+    - X1_mat_1d, X2_mat_1d, X3_mat_1d: np.ndarray
+        Flattened 1D arrays of the grid points in each dimension.
+    - lowerLims, upperLims: np.ndarray
+        Arrays specifying the lower and upper bounds of the state space in each dimension.
+    - dVec: np.ndarray
+        Grid spacings in each dimension (hX1, hX2, hX3).
+    - increVec: np.ndarray
+        Array used for indexing in the flattened state space.
+    - v0: np.ndarray
+        Current estimate of the value function, flattened into a 1D array.
+    - A, B_1, B_2, B_3: np.ndarray
+        Coefficients of the zeroth and first-order derivative terms in the PDE.
+    - C_1, C_2, C_3: np.ndarray
+        Coefficients of the second-order derivative terms in the PDE.
+    - D: np.ndarray
+        Constant term in the PDE.
+    - tol: float
+        Tolerance for the linear solver convergence.
+    - epsilon: float
+        Small parameter for numerical stability in the time-stepping scheme.
+
+    Returns:
+    - out_comp: np.ndarray
+        Updated value function after solving the PDE.
+    - end_ksp: float
+        Time when the KSP solver finished.
+    - bpoint1: float
+        Time when the function started.
+    """
     bpoint1 = time.time()
     A_1d   = A.ravel(order = 'F')
     C_1_1d = C_1.ravel(order = 'F')
@@ -47,7 +83,44 @@ def pde_one_interation(ksp, petsc_mat, X1_mat_1d, X2_mat_1d, X3_mat_1d, lowerLim
     return out_comp,end_ksp,bpoint1
 
 def _FOC_update(v0, steps= (), states = (), args=(), controls=(), fraction=0.5):
+    """
+    Updates the control variables (investment, emissions, abatement) by solving the
+    first-order conditions (FOCs) derived from the HJB equation.
 
+    Parameters:
+    - v0: np.ndarray
+        Current estimate of the value function.
+    - steps: tuple
+        Grid spacings in each dimension (hX1, hX2, hX3).
+    - states: tuple
+        State variable grids (K_mat, Y_mat, L_mat).
+    - args: tuple
+        Model parameters.
+    - controls: tuple
+        Current estimates of control variables (i_star, e_star, x_star).
+    - fraction: float
+        Relaxation parameter for updating the controls.
+
+    Returns:
+    - A, B_1, B_2, B_3: np.ndarray
+        Updated coefficients for the PDE.
+    - C_1, C_2, C_3: np.ndarray
+        Updated diffusion coefficients for the PDE.
+    - D: np.ndarray
+        Updated source term for the PDE.
+    - dX1, dX2, dX3: np.ndarray
+        First derivatives of the value function.
+    - ddX1, ddX2, ddX3: np.ndarray
+        Second derivatives of the value function.
+    - ii, ee, xx: np.ndarray
+        Updated control variables.
+    - pi_c: np.ndarray
+        Updated probability distributions.
+    - gg: np.ndarray
+        Updated technology adoption probabilities.
+    - h, h_k, h_j: np.ndarray
+        Updated adjustment cost terms.
+    """
     hX1, hX2, hX3 = steps
     K_mat, Y_mat, L_mat = states
     delta, alpha, theta, vartheta_bar, lambda_bar, mu_k, kappa, sigma_k, theta_ell, pi_c_o, pi_c, sigma_y, zeta, psi_0, psi_1, sigma_g, V_post_tech, dG, ddG, xi_a, xi_k, xi_c, xi_j, xi_d, xi_g, rho, varrho = args
@@ -259,7 +332,35 @@ def hjb_pre_tech(
         v0=None,
         smart_guess=None,
         ):
+    """
+    Solves the HJB equation for the pre-technology scenario using an iterative method.
+    Updates the value function and control variables until convergence is achieved.
 
+    Parameters:
+    - state_grid: tuple
+        State variable grids (K, Y, L).
+    - model_args: tuple
+        Model parameters.
+    - V_post_damage: np.ndarray
+        Value function after damage occurs (used in the pre-damage model).
+    - tol: float
+        Convergence tolerance for the iteration.
+    - epsilon: float
+        Small parameter for numerical stability in the time-stepping scheme.
+    - fraction: float
+        Relaxation parameter for updating the controls.
+    - max_iter: int
+        Maximum number of iterations allowed.
+    - v0: np.ndarray, optional
+        Initial guess for the value function.
+    - smart_guess: dict, optional
+        Dictionary containing initial guesses for the value function and controls.
+
+    Returns:
+    - res: dict
+        Dictionary containing the final value function, controls, probability distributions,
+        marginal effects, and convergence error.
+    """
     now = datetime.now()
     current_time = now.strftime("%d-%H:%M")
     K, Y, L = state_grid

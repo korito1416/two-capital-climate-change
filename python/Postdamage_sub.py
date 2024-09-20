@@ -1,19 +1,31 @@
 """
 post_damage.py
 ======================
-Solver for solving post damage HJBs, with different values of gamma_3 
+run Postdamage.py first and then Postdamage_sub.py:
+
+Initial Solution Generation: The Postdamage.py script is used to compute the initial solutions for the 
+                            Hamilton-Jacobi-Bellman (HJB) equations without any prior knowledge or initial guesses. 
+                            It solves the HJB equations for specific values of the damage sensitivity parameter gamma_3 
+                            (often starting with the lowest value) from scratch.
+
+Providing Baseline Solutions: The solutions obtained from post_damage.py serve as baseline solutions. 
+                                These solutions are saved and can be used as initial guesses for subsequent computations.
+
+Improving Computational Efficiency with Postdamage_sub.py: The Postdamage_sub.py script is designed to solve the HJB equations for other values of 
+                                                    gamma_3 more efficiently by using the solutions from post_damage.py as initial guesses. 
+By doing so, it reduces computational time and enhances convergence because the solver starts from a solution that's already close to the new target.
 
 python3 -u /home/bcheng4/TwoCapital_Shrink/abatement_UD/postdamage_2jump_CRS.py --num_gamma 3 --xi_a 0.0002 --xi_g 0.025  --epsilonarr 0.1 0.01  --fractionarr 0.1 0.01   --maxiterarr 80000 200000  --id 3 --psi_0 0.105830 --psi_1 0.5 --name 2jump_step_4.00,9.00_0.0,4.0_1.0,6.0_SS_0.2,0.2,0.2_LR_0.1_CRS_PETSCFK --hXarr 0.2 0.2 0.2 --Xminarr 4.00 0.0 1.0 0.0 --Xmaxarr 9.00 4.0 6.0 3.0
 
-
 """
+
 # Optimization of post jump HJB
 # Required packages
 import os
-import sys
-sys.path.append('./src')
-import csv
-from src.Utility import *
+import sys 
+sys.path.append('./src') 
+import csv 
+from src.Utility import * 
 from src.Utility import finiteDiff_3D
 sys.stdout.flush()
 import petsc4py

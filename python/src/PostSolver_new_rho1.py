@@ -30,7 +30,45 @@ from datetime import datetime
 
 
 def pde_one_interation(ksp, petsc_mat, X1_mat_1d, X2_mat_1d, X3_mat_1d, lowerLims, upperLims, dVec, increVec, v0, A, B_1, B_2, B_3, C_1, C_2, C_3, D, tol, epsilon):
+    """
+    Perform one iteration of solving the PDE using PETSc linear solvers.
 
+    This function constructs the linear system representing the PDE,
+    solves it using the provided Krylov subspace solver (`ksp`), and
+    updates the value function.
+
+    Parameters
+    ----------
+    ksp : PETSc.KSP
+        Krylov subspace solver object from PETSc.
+    petsc_mat : PETSc.Mat
+        The PETSc matrix representing the linear system.
+    X1_mat_1d, X2_mat_1d, X3_mat_1d : np.ndarray
+        1D representations of the grid matrices for each state variable.
+    lowerLims, upperLims : np.ndarray
+        Lower and upper limits of the state variables.
+    dVec : np.ndarray
+        Vector of grid step sizes.
+    increVec : np.ndarray
+        Vector indicating grid increments.
+    v0 : np.ndarray
+        Current value function.
+    A, B_1, B_2, B_3, C_1, C_2, C_3, D : np.ndarray
+        Coefficients in the PDE.
+    tol : float
+        Tolerance for the linear solver convergence.
+    epsilon : float
+        Step size for updating the value function.
+
+    Returns
+    -------
+    out_comp : np.ndarray
+        Updated value function after solving the linear system.
+    end_ksp : float
+        Time taken by the PETSc solver.
+    bpoint1 : float
+        Start time of the iteration.
+    """
     bpoint1 = time.time()
     A_1d   = A.ravel(order = 'F')
     C_1_1d = C_1.ravel(order = 'F')
@@ -60,7 +98,38 @@ def pde_one_interation(ksp, petsc_mat, X1_mat_1d, X2_mat_1d, X3_mat_1d, lowerLim
     return out_comp,end_ksp,bpoint1
 
 def _FOC_update(v0, steps= (), states = (), args=(), controls=(), fraction=0.5):
+    """
+    Update the First Order Conditions (FOC) based on the current value function.
 
+    This function computes the derivatives of the value function, updates the
+    control variables (i), and calculates various coefficients used in the PDE.
+
+    Parameters
+    ----------
+    v0 : np.ndarray
+        Current value function.
+    steps : tuple
+        Step sizes (hX1, hX2, hX3) for each state variable.
+    states : tuple
+        Current state matrices (K_mat, Y_mat, L_mat).
+    args : tuple
+        Model parameters.
+    controls : tuple
+        Current optimal control (i_star).
+    fraction : float
+        Fraction used for updating controls to ensure stability.
+
+    Returns
+    -------
+    A, B_1, B_2, B_3, C_1, C_2, C_3, D : np.ndarray
+        Updated coefficients for the PDE.
+    dX1, ddX1 : np.ndarray
+        First and second order derivatives of the value function with respect to X1.
+    ii : np.ndarray
+        Updated control variable (i).
+    h_k : np.ndarray
+        Auxiliary variable related to climate or technology.
+    """
     hX1, hX2, hX3 = steps
     K_mat, Y_mat, L_mat = states
     delta, alpha, theta, vartheta_bar, lambda_bar, mu_k, kappa, sigma_k, theta_ell, pi_c_o, pi_c, sigma_y, zeta, psi_0, psi_1, sigma_g, xi_a, xi_k, xi_c, xi_j, xi_d, xi_g, rho, varrho = args
@@ -129,7 +198,40 @@ def hjb_post_tech(
         v0=None,
         smart_guess=None,
         ):
+    """
+    Solve the Hamilton-Jacobi-Bellman (HJB) equation after a technology shock.
 
+    This function sets up the state grid, initializes variables, and iteratively
+    solves the HJB equation using finite difference methods and PETSc solvers
+    until convergence is achieved or the maximum number of iterations is reached.
+
+    Parameters
+    ----------
+    state_grid : tuple
+        Tuple containing arrays for each state variable grid (K, Y, L).
+    model_args : tuple
+        Tuple containing all model parameters.
+    V_post_damage : np.ndarray, optional
+        Value function after damage shocks. Default is None.
+    tol : float, optional
+        Tolerance for convergence. Default is 1e-8.
+    epsilon : float, optional
+        Step size for updating the value function. Default is 0.1.
+    fraction : float, optional
+        Fraction used for updating controls to ensure stability. Default is 0.5.
+    max_iter : int, optional
+        Maximum number of iterations. Default is 10000.
+    v0 : np.ndarray, optional
+        Initial guess for the value function. If None, a default is used.
+    smart_guess : dict, optional
+        Dictionary containing smart guesses for initialization. Default is None.
+
+    Returns
+    -------
+    res : dict
+        Dictionary containing the solved value function, optimal controls,
+        and other auxiliary variables.
+    """
     now = datetime.now()
     current_time = now.strftime("%d-%H:%M")
     K, Y, L = state_grid

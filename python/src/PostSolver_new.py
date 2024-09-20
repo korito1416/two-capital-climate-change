@@ -30,7 +30,26 @@ from datetime import datetime
 
 
 def pde_one_interation(ksp, petsc_mat, X1_mat_1d, X2_mat_1d, X3_mat_1d, lowerLims, upperLims, dVec, increVec, v0, A, B_1, B_2, B_3, C_1, C_2, C_3, D, tol, epsilon):
+    """
+    Perform one iteration of solving the discretized HJB equation using PETSc.
 
+    Parameters:
+    - ksp: PETSc linear solver object.
+    - petsc_mat: PETSc matrix representing the discretized PDE operator.
+    - X*_mat_1d: Flattened state variable grids.
+    - lowerLims, upperLims: Bounds of the state variables.
+    - dVec: Grid spacings for each state variable.
+    - increVec: Index increments for moving through the state grid.
+    - v0: Current guess of the value function.
+    - A, B_*, C_*, D: Coefficients of the PDE derived from the model.
+    - tol: Solver tolerance.
+    - epsilon: Time step size for the false transient method.
+
+    Returns:
+    - out_comp: Updated value function after one iteration.
+    - end_ksp: Time when the KSP solver finishes.
+    - bpoint1: Start time for performance tracking.
+    """
     bpoint1 = time.time()
     A_1d   = A.ravel(order = 'F')
     C_1_1d = C_1.ravel(order = 'F')
@@ -60,7 +79,22 @@ def pde_one_interation(ksp, petsc_mat, X1_mat_1d, X2_mat_1d, X3_mat_1d, lowerLim
     return out_comp,end_ksp,bpoint1
 
 def _FOC_update(v0, steps= (), states = (), args=(), controls=(), fraction=0.5):
+    """
+    Update control variables and compute PDE coefficients based on the current value function.
 
+    Parameters:
+    - v0: Current guess of the value function.
+    - steps: Grid spacings (hX1, hX2, hX3) for the state variables.
+    - states: State variable grids (K_mat, Y_mat, L_mat).
+    - args: Model parameters.
+    - controls: Previous control variables (i_star).
+    - fraction: Weight for averaging new and old controls (for stability).
+
+    Returns:
+    - PDE coefficients: A, B_1, B_2, B_3, C_1, C_2, C_3, D.
+    - Derivatives: dX1, ddX1.
+    - Updated controls: ii (investment policy), h_k (stochastic control for capital).
+    """
     hX1, hX2, hX3 = steps
     K_mat, Y_mat, L_mat = states
     delta, alpha, theta, vartheta_bar, lambda_bar, mu_k, kappa, sigma_k, theta_ell, pi_c_o, pi_c, sigma_y, zeta, psi_0, psi_1, sigma_g, xi_a, xi_k, xi_c, xi_j, xi_d, xi_g, rho, varrho = args
@@ -81,17 +115,11 @@ def _FOC_update(v0, steps= (), states = (), args=(), controls=(), fraction=0.5):
     ddY = ddX2
     ddX3 = finiteDiff_3D(v0,2,2,hX3)
 
-
     temp = delta * ( (alpha - i_star) * np.exp(K_mat) / np.exp(v0)    )**(-rho) * (np.exp(K_mat)/np.exp(v0))
 
     i_new = (1- temp/dK)/kappa
 
-
-
     ii = i_new * fraction + i_star * (1 - fraction)
-
-
-    
     
     h_k = -1/xi_k *sigma_k * dK 
     
@@ -99,7 +127,6 @@ def _FOC_update(v0, steps= (), states = (), args=(), controls=(), fraction=0.5):
     
 
     consumption = alpha - ii 
-    
     temp_recursive = (consumption *np.exp(K_mat)/np.exp(v0))**(1-rho) - 1
     
     A   = np.zeros_like(K_mat)
@@ -115,11 +142,8 @@ def _FOC_update(v0, steps= (), states = (), args=(), controls=(), fraction=0.5):
     C_3 = np.zeros_like(K_mat)
     
     D = delta / (1-rho) *temp_recursive
-     
     D += 1/2 * xi_k * h_k**2
 
-    
-    
     return A, B_1, B_2, B_3, C_1, C_2, C_3, D, dX1, ddX1, ii, h_k
 
 
@@ -129,7 +153,23 @@ def hjb_post_tech(
         v0=None,
         smart_guess=None,
         ):
+    """
+    Solve the HJB equation for the post-technology economy using value function iteration.
 
+    Parameters:
+    - state_grid: Tuple of state variable grids (K, Y, L).
+    - model_args: Model parameters.
+    - V_post_damage: Not used in the provided code (placeholder for extensions).
+    - tol: Convergence tolerance for the fixed-point iteration.
+    - epsilon: Time step size for the false transient method.
+    - fraction: Weight for control updates.
+    - max_iter: Maximum number of iterations.
+    - v0: Initial guess for the value function.
+    - smart_guess: Dictionary containing initial guesses for v0 and controls.
+
+    Returns:
+    - res: Dictionary containing the value function, optimal controls, and error metrics.
+    """
     now = datetime.now()
     current_time = now.strftime("%d-%H:%M")
     K, Y, L = state_grid

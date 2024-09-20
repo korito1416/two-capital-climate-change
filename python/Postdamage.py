@@ -1,10 +1,19 @@
 """
 post_damage.py
 ======================
-Solver for solving post damage HJBs, with different values of gamma_3 
+
+Purpose: The script solves post-damage HJB equations with different values of gamma_3 to analyze how changes in this parameter affect the economic model's outcomes.
+
+Main Components:
+------------------------------
+Parsing Command-Line Arguments: Sets up the model parameters based on user inputs.
+                    Defining Model Parameters and Grids: Establishes the economic and numerical parameters for the model.
+Solving HJB Equations:
+Post-Damage, Technology II: Solves the HJB equation after damage occurs under Technology II.
+Post-Damage, Technology I: Solves the HJB equation after damage occurs under Technology I, using the solution from Technology II.
+Checking Solutions: Verifies the computed solutions for consistency.
 
 python3 -u /home/bcheng4/TwoCapital_Shrink/abatement_UD/postdamage_2jump_CRS.py --num_gamma 3 --xi_a 0.0002 --xi_g 0.025  --epsilonarr 0.1 0.01  --fractionarr 0.1 0.01   --maxiterarr 80000 200000  --id 3 --psi_0 0.105830 --psi_1 0.5 --name 2jump_step_4.00,9.00_0.0,4.0_1.0,6.0_SS_0.2,0.2,0.2_LR_0.1_CRS_PETSCFK --hXarr 0.2 0.2 0.2 --Xminarr 4.00 0.0 1.0 0.0 --Xmaxarr 9.00 4.0 6.0 3.0
-
 
 """
 # Optimization of post jump HJB
@@ -30,7 +39,7 @@ from src.PostSolver_new import hjb_post_tech
 from src.PreSolver_CRS2_new import hjb_pre_tech
 from src.PostSolver_new_rho1 import hjb_post_tech as hjb_post_tech_rho1
 from src.PreSolver_CRS2_new_rho1 import hjb_pre_tech as hjb_pre_tech_rho1
-import argparse
+import argparse  # argparse module: accept various parameters when executed from the command line.
 
 reporterror = True
 # Linear solver choices
@@ -42,31 +51,105 @@ reporterror = True
 #
 now = datetime.now()
 current_time = now.strftime("%d-%H:%M")
-
-
+ 
+# Create the parser for command-line arguments
 parser = argparse.ArgumentParser(description="xi_r values")
+
+# ------------------------------------------------------------------------
+# Risk Aversion and Uncertainty Parameters
+# ------------------------------------------------------------------------
 parser.add_argument("--xi_a", type=float, default=1000.)
 parser.add_argument("--xi_k", type=float, default=1000.)
 parser.add_argument("--xi_c", type=float, default=1000.)
 parser.add_argument("--xi_j", type=float, default=1000.)
 parser.add_argument("--xi_d", type=float, default=1000.)
 parser.add_argument("--xi_g", type=float, default=1000.)
+
+# varrho: Damage distribution parameter (float, default=1000.0)
+# A parameter in the damage function that influences damage jump intensity.
 parser.add_argument("--varrho", type=float, default=1000.)
+
+ 
+# phi_0: Damage function parameter (float, required)
+# A parameter representing the initial level or scale of damage in the damage function.
 parser.add_argument("--phi_0", type=float)
+ 
+# ------------------------------------------------------------------------
+# Preference and Discounting Parameters
+# ------------------------------------------------------------------------
+# rho: Relative risk aversion coefficient (float, required)
+# Represents the relative risk aversion in the utility function.
 parser.add_argument("--rho", type=float)
+
+# delta: Discount rate (float, required)
+# The discount rate used in the model, affecting present value calculations.
 parser.add_argument("--delta", type=float)
+
+
+# ------------------------------------------------------------------------
+# Computational and Identification Parameters
+# ------------------------------------------------------------------------
+
+# id: Index for gamma_3 values (int, default=0)
+# Identifier for the index of gamma_3 in the list of damage sensitivity parameters.
 parser.add_argument("--id", type=int, default=0)
+
+
+# psi_0: Damage elasticity parameter (float, default=0.003)
+# Controls the elasticity of the damage function with respect to state variables.
 parser.add_argument("--psi_0", type=float, default=0.003)
+
+# psi_1: Damage elasticity parameter (float, default=0.5)
+# Another parameter influencing the elasticity or shape of the damage function.
 parser.add_argument("--psi_1", type=float, default=0.5)
-parser.add_argument("--num_gamma",type=int,default=6)
-parser.add_argument("--name",type=str,default="ReplicateSuri")
-parser.add_argument("--outputname",type=str,default="ReplicateSuri")
-parser.add_argument("--hXarr",nargs='+',type=float)
-parser.add_argument("--Xminarr",nargs='+',type=float)
-parser.add_argument("--Xmaxarr",nargs='+',type=float)
-parser.add_argument("--epsilonarr",nargs='+',type=float,default=(0.1))
-parser.add_argument("--fractionarr",nargs='+',type=float, default=(0.1, 0.1))
-parser.add_argument("--maxiterarr",nargs='+',type=int, default=(80000, 200000))
+
+
+# num_gamma: Number of gamma_3 values to evaluate (int, default=6)
+# Specifies the number of gamma_3 values to analyze in the model.
+parser.add_argument("--num_gamma", type=int, default=6)
+
+# name: Name for output files and directories (str, default="ReplicateSuri")
+# Used for file naming or output directory designation.
+parser.add_argument("--name", type=str, default="ReplicateSuri")
+
+# outputname: Output directory name (str, default="ReplicateSuri")
+# Specifies the directory where output files will be saved.
+parser.add_argument("--outputname", type=str, default="ReplicateSuri")
+
+# ------------------------------------------------------------------------
+# Grid and State Space Parameters
+# ------------------------------------------------------------------------
+
+# hXarr: Grid step sizes for state variables (list of floats, required)
+# An array of grid step sizes [h_K, h_Y, h_L] for each state variable.
+#   h_K: Step size for capital grid.
+#   h_Y: Step size for technology grid.
+#   h_L: Step size for labor or damage grid.
+parser.add_argument("--hXarr", nargs='+', type=float)
+
+# Xminarr: Minimum values for state variables (list of floats, required)
+# An array of minimum values [K_min, Y_min, L_min, ...] for each state variable.
+parser.add_argument("--Xminarr", nargs='+', type=float)
+
+# Xmaxarr: Maximum values for state variables (list of floats, required)
+# An array of maximum values [K_max, Y_max, L_max, ...] for each state variable.
+parser.add_argument("--Xmaxarr", nargs='+', type=float)
+
+# ------------------------------------------------------------------------
+# Numerical Solver Parameters
+# ------------------------------------------------------------------------
+
+# epsilonarr: Epsilon values for solver convergence (list of floats, default=[0.1])
+# Controls convergence criteria or step sizes in the numerical solver.
+parser.add_argument("--epsilonarr", nargs='+', type=float, default=(0.1))
+
+# fractionarr: Fraction values for solver updates (list of floats, default=[0.1, 0.1])
+# Determines the proportion of the computed update applied in each iteration.
+parser.add_argument("--fractionarr", nargs='+', type=float, default=(0.1, 0.1))
+
+# maxiterarr: Maximum number of iterations for solver (list of ints, default=[80000, 200000])
+# Specifies the maximum number of iterations allowed for the solver.
+parser.add_argument("--maxiterarr", nargs='+', type=int, default=(80000, 200000))
 
 # args = parser.parse_args()
 args, unknown = parser.parse_known_args()

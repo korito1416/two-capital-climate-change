@@ -10,7 +10,27 @@ import SolveLinSys
 # from numba import njit
 
 def finiteDiff(data, dim, order, dlt, cap = None):  
-    # compute the central difference derivatives for given input and dimensions
+    """
+    Computes finite difference approximations of derivatives for multidimensional data arrays.
+    Supports data arrays of dimensions 2, 3, or 4 and can compute first or second-order derivatives
+    along a specified dimension.
+
+    Parameters:
+    - data: np.ndarray
+        The input data array (2D, 3D, or 4D).
+    - dim: int
+        The dimension along which to compute the derivative (0-based index).
+    - order: int
+        The order of the derivative (1 for first-order, 2 for second-order).
+    - dlt: float
+        The grid spacing (delta) in the specified dimension.
+    - cap: float, optional
+        If provided, any values in the result less than 'cap' are set to 'cap'.
+
+    Returns:
+    - res: np.ndarray
+        An array of the same shape as 'data' containing the computed derivatives.
+    """
     res = np.zeros(data.shape)
     l = len(data.shape)
     if l == 3:
@@ -169,7 +189,26 @@ def finiteDiff(data, dim, order, dlt, cap = None):
     return res
 
 def finiteDiff_3D(data, dim, order, dlt, cap = None):  
-    # compute the central difference derivatives for given input and dimensions
+    """
+    Specialized function for computing finite difference approximations for 3D data arrays.
+    Computes first or second-order derivatives along a specified dimension.
+
+    Parameters:
+    - data: np.ndarray (3D)
+        The input data array.
+    - dim: int
+        The dimension along which to compute the derivative (0, 1, or 2).
+    - order: int
+        The order of the derivative (1 or 2).
+    - dlt: float
+        The grid spacing (delta) in the specified dimension.
+    - cap: float, optional
+        If provided, any values in the result less than 'cap' are set to 'cap'.
+
+    Returns:
+    - res: np.ndarray (3D)
+        An array containing the computed derivatives.
+    """
     res = np.zeros(data.shape)
     l = len(data.shape)
     if l == 3:
@@ -269,7 +308,26 @@ def finiteDiff_3D(data, dim, order, dlt, cap = None):
 
 
 def DiffOne(data, dim, order, dlt, cap = None):  
-    # compute the central difference derivatives for given input and dimensions
+    """
+    Computes finite differences using a forward difference scheme for first-order derivatives.
+    Supports data arrays of dimensions 2, 3, or 4.
+
+    Parameters:
+    - data: np.ndarray
+        The input data array (2D, 3D, or 4D).
+    - dim: int
+        The dimension along which to compute the derivative (0-based index).
+    - order: int
+        The order of the derivative (1 or 2).
+    - dlt: float
+        The grid spacing in the specified dimension.
+    - cap: float, optional
+        If provided, any values in the result less than 'cap' are set to 'cap'.
+
+    Returns:
+    - res: np.ndarray
+        An array containing the computed derivatives.
+    """
     res = np.zeros(data.shape)
     l = len(data.shape)
     if l == 3:
@@ -431,7 +489,36 @@ def DiffOne(data, dim, order, dlt, cap = None):
 
 
 def PDESolver(stateSpace, A, B_r, B_f, B_k, C_rr, C_ff, C_kk, D, v0, ε = 1, tol = -10, smartguess = False, solverType = 'False Transient'):
+   """
+    Solves partial differential equations (PDEs) using either the False Transient method or the
+    Feynman-Kac method for three-dimensional problems.
 
+    Parameters:
+    - stateSpace: tuple
+        The grid representing the state space over which the PDE is defined.
+    - A: np.ndarray
+        Zeroth-order term (constant term) in the PDE.
+    - B_r, B_f, B_k: np.ndarray
+        Coefficients of the first-order derivative terms in the PDE along different dimensions.
+    - C_rr, C_ff, C_kk: np.ndarray
+        Coefficients of the second-order derivative terms (diffusion terms) in the PDE.
+    - D: np.ndarray
+        Source term or forcing term in the PDE.
+    - v0: np.ndarray
+        Initial guess for the solution of the PDE.
+    - ε: float, default 1
+        Controls the convergence speed in the False Transient method.
+    - tol: float, default -10
+        Tolerance level for convergence (e.g., -10 corresponds to 1e-10).
+    - smartguess: bool, default False
+        If True, uses a smart initial guess with fewer iterations.
+    - solverType: str, default 'False Transient'
+        Solver method to use ('False Transient' or 'Feyman Kac').
+
+    Returns:
+    - out: np.ndarray
+        The computed solution to the PDE.
+    """
     if solverType == 'False Transient':
         A = A.reshape(-1,1,order = 'F')
         B = np.hstack([B_r.reshape(-1,1,order = 'F'),B_f.reshape(-1,1,order = 'F'),B_k.reshape(-1,1,order = 'F')])
@@ -459,7 +546,35 @@ def PDESolver(stateSpace, A, B_r, B_f, B_k, C_rr, C_ff, C_kk, D, v0, ε = 1, tol
         return out
 
 def PDESolver_4D(stateSpace, A, B_1, B_2, B_3, B_4, C_11, C_22, C_33, C_44,  D, v0, ε = 1, tol = -10, smartguess = False, solverType = 'False Transient'):
+    """
+    Extends PDESolver to handle four-dimensional PDEs, suitable for problems involving four state variables.
 
+    Parameters:
+    - stateSpace: tuple
+        The grid representing the four-dimensional state space over which the PDE is defined.
+    - A: np.ndarray
+        Zeroth-order term in the PDE.
+    - B_1, B_2, B_3, B_4: np.ndarray
+        Coefficients of the first-order derivative terms along the four dimensions.
+    - C_11, C_22, C_33, C_44: np.ndarray
+        Coefficients of the second-order derivative terms along the four dimensions.
+    - D: np.ndarray
+        Source term in the PDE.
+    - v0: np.ndarray
+        Initial guess for the solution of the PDE.
+    - ε: float, default 1
+        Controls the convergence speed in the False Transient method.
+    - tol: float, default -10
+        Tolerance level for convergence.
+    - smartguess: bool, default False
+        If True, uses a smart initial guess.
+    - solverType: str, default 'False Transient'
+        Solver method to use ('False Transient' or 'Feyman Kac').
+
+    Returns:
+    - out: np.ndarray
+        The computed solution to the four-dimensional PDE.
+    """
     if solverType == 'False Transient':
         A = A.reshape(-1,1,order = 'F')
         B = np.hstack([B_1.reshape(-1,1,order = 'F'),B_2.reshape(-1,1,order = 'F'), B_3.reshape(-1,1,order = 'F'), B_4.reshape(-1,1,order='F')])
