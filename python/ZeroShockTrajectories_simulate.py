@@ -194,10 +194,28 @@ def simulate_pre(
     controls = (),
     ME = (),
     n_bar = (),  
-    initial=(np.log(85/0.115), 1.1, np.log(11.2)), 
-    T0=0, T=40, dt=1/12,
+    initial=(np.log(85/0.115), 1.1, np.log(11.2)),   # Initial state values for K, Y, L
+    T0=0, T=40, dt=1/12, # Time parameters: start time, end time, and time step
     printing=True):
+    """
+    Simulate the pre-jump dynamics of the model over a specified time horizon.
 
+    Parameters:
+    - grid: Tuple of arrays representing the discretized state variables (K, Y, L).
+    - model_args: Tuple of model parameters used in the simulation.
+    - controls: Tuple of control variables and functions obtained from solving the HJB equations.
+    - ME: Marginal emission cost function or array.
+    - n_bar: Index or limit used to truncate or subset the arrays (e.g., for temperature anomaly Y).
+    - initial: Tuple of initial state values (K_0, Y_0, L_0).
+    - T0: Initial time of the simulation.
+    - T: Total time to simulate.
+    - dt: Time step size.
+    - printing: Boolean indicating whether to print debug information during the simulation.
+
+    Returns:
+    - res: Dictionary containing simulation results and computed variables.
+    """
+    
     K, Y, L = grid
 
     if printing==True:
@@ -205,6 +223,21 @@ def simulate_pre(
 
     K_min, K_max, Y_min, Y_max, L_min, L_max = min(K), max(K), min(Y), max(Y), min(L), max(L)
     hK, hY, hL = K[1] - K[0], Y[1] - Y[0], L[1]-L[0]
+
+    '''    # Unpack control variables and functions from the HJB solution
+    (
+        ii,           # Investment policy function
+        ee,           # Emission policy function
+        xx,           # R&D investment policy function
+        g_tech,       # Technology jump probability adjustment
+        g_damage,     # Damage jump probability adjustment
+        pi_c,         # Adjusted probabilities for climate models
+        h,            # Uncertainty adjustment function for temperature anomaly
+        h_k,          # Uncertainty adjustment function for capital
+        h_j,          # Uncertainty adjustment function for knowledge capital
+        v,            # Value function before technology jump
+        v_post_tech_raw,  # Value function after technology jump
+    ) = controls'''
 
     delta, mu_k, kappa, sigma_k, beta_f, zeta, psi_0, psi_1, sigma_g, theta, lambda_bar, vartheta_bar, varrho, xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,rho = model_args
     ii, ee, xx, g_tech, g_damage, pi_c, h, h_k, h_j, v, v_post_tech_raw = controls
@@ -244,10 +277,12 @@ def simulate_pre(
         
     (K_mat, Y_mat, L_mat) = np.meshgrid(K, Y, L, indexing = 'ij')
 
+    # Compute the abatement cost function jj based on emissions ee and other parameters
     jj = alpha * vartheta_bar * (1 - ee / (alpha * lambda_bar * np.exp(K_mat)))**theta
     
     jj[jj <= 1e-16] = 1e-16
     consumption = alpha - ii - jj - xx
+    # Compute the total marginal emission cost ME_total
     ME_total = delta/ consumption  * alpha * vartheta_bar * theta * (1 - ee / ( alpha * lambda_bar * np.exp(K_mat)))**(theta - 1) /( alpha * lambda_bar * np.exp(K_mat) )
 
 
@@ -266,6 +301,7 @@ def simulate_pre(
     pi_c_o = np.array([temp * np.ones(K_mat.shape) for temp in pi_c_o])
     # theta_ell = np.array([temp * np.ones(K_mat.shape) for temp in theta_ell])
 
+    # Compute finite differences of the value function v with respect to K, Y, and L
     dK = finiteDiff_3D(v, 0,1,hK )
     dY = finiteDiff_3D(v, 1,1,hY )
     dL = finiteDiff_3D(v, 2,1,hL )
@@ -274,32 +310,33 @@ def simulate_pre(
     
     gridpoints = (K, Y, L)
 
-    i_func = RegularGridInterpolator(gridpoints, ii)
-    e_func = RegularGridInterpolator(gridpoints, ee)
-    x_func = RegularGridInterpolator(gridpoints, xx)
-    tech_func = RegularGridInterpolator(gridpoints, g_tech)
-    
-    v_func = RegularGridInterpolator(gridpoints, v)
-    v_post_tech_func = RegularGridInterpolator(gridpoints, v_post_tech)
-    
-    h_func = RegularGridInterpolator(gridpoints, h)
-    hk_func = RegularGridInterpolator(gridpoints, h_k)
-    hj_func = RegularGridInterpolator(gridpoints, h_j)
-    dK_func   = RegularGridInterpolator(gridpoints, dK)
-    dL_func   = RegularGridInterpolator(gridpoints, dL)
-    dY_func   = RegularGridInterpolator(gridpoints, dY)
-    ME_total_func = RegularGridInterpolator(gridpoints, ME_total)
-    ME_base_func = RegularGridInterpolator(gridpoints, ME_base)
-    
-    
-    
-    n_damage = len(g_damage)
+    # Create interpolating functions for control variables and value functions
 
+    i_func = RegularGridInterpolator(gridpoints, ii) # Investment function
+    e_func = RegularGridInterpolator(gridpoints, ee) # Emission function
+    x_func = RegularGridInterpolator(gridpoints, xx)  # R&D function
+    tech_func = RegularGridInterpolator(gridpoints, g_tech)  # Technology function
+    
+    v_func = RegularGridInterpolator(gridpoints, v)  # Value function
+    v_post_tech_func = RegularGridInterpolator(gridpoints, v_post_tech)  # Post-tech value function
+
+    h_func = RegularGridInterpolator(gridpoints, h)  # Uncertainty adjustment function h
+    hk_func = RegularGridInterpolator(gridpoints, h_k)  # Uncertainty adjustment function h_k
+    hj_func = RegularGridInterpolator(gridpoints, h_j)  # Uncertainty adjustment function h_j
+    dK_func = RegularGridInterpolator(gridpoints, dK)  # Derivative of v w.r.t K
+    dL_func = RegularGridInterpolator(gridpoints, dL)  # Derivative of v w.r.t L
+    dY_func = RegularGridInterpolator(gridpoints, dY)  # Derivative of v w.r.t Y
+    ME_total_func = RegularGridInterpolator(gridpoints, ME_total)  # Marginal emission cost function
+    ME_base_func = RegularGridInterpolator(gridpoints, ME_base)  # Base marginal emission cost function
+
+    # Create a list of interpolating functions for damage functions
+    n_damage = len(g_damage)
     damage_func_list = []
     for i in range(n_damage):
         func_i = RegularGridInterpolator(gridpoints, g_damage[i])
         damage_func_list.append(func_i)
-        
+    
+    # Create a list of interpolating functions for climate functions
     n_climate = len(pi_c)
     
     climate_func_list = []
@@ -307,7 +344,7 @@ def simulate_pre(
         func_i = RegularGridInterpolator(gridpoints, pi_c[i])
         climate_func_list.append(func_i)
 
-
+    # Define functions to retrieve control variables at a given state
     def get_i(x):
         return i_func(x)
 
@@ -320,15 +357,16 @@ def simulate_pre(
     def get_dL(x):
         return dL_func(x)
 
-
+    # Define drift terms for the stochastic differential equations
     def mu_K(i_x):
         return mu_k + i_x - 0.5 * kappa * i_x ** 2  - 0.5 * sigma_k ** 2
     
     def mu_L(Xt, state):
+        # Drift for technology level L
         # return -zeta + psi_0 * Xt **psi_1 * (np.exp( psi_1 * state[0]) )  * np.exp( (psi_2-1) * (state[2] - np.log(448)) ) - 0.5 * sigma_g**2
         return -zeta + psi_0 * Xt **psi_1 * (np.exp( psi_1 * (state[0]-state[2])) )  - 0.5 * sigma_g**2
     
-    
+    # Initialize arrays to store simulation results
     hist      = np.zeros([pers, 3])
     i_hist    = np.zeros([pers])
     e_hist    = np.zeros([pers])
@@ -361,6 +399,7 @@ def simulate_pre(
     mu_L_hist = np.zeros([pers])
     theta_ell_hist = np.zeros([len(theta_ell),pers])
 
+    # Main simulation loop over time periods
     for tm in range(pers):
         if tm == 0:
 
@@ -383,7 +422,7 @@ def simulate_pre(
             dK_hist[tm] = dK_func(hist[0,:])
             dL_hist[tm] = dL_func(hist[0,:])
             dY_hist[tm] = dY_func(hist[0,:])
-
+            # Damage function and climate probability at initial state
             for i in range(n_damage):
                 damage_func = damage_func_list[i]
                 gt_dmg[i, 0] = damage_func(hist[0, :])
@@ -401,7 +440,7 @@ def simulate_pre(
             e_annual_hist[0] = get_e(hist[0, :])
             ii=0
         else:
-            
+            # Subsequent time steps
             if tm % 12 ==0:
 
                 e_annual_hist[ii] = get_e(hist[tm-1,:])
@@ -432,7 +471,7 @@ def simulate_pre(
                 pi_c_t[i, tm] = climate_func(hist[tm -1, :])
                 
 
-
+            # zero shock simulation
             mu_K_hist[tm] = mu_K(i_hist[tm])
             mu_L_hist[tm] = mu_L(x_hist[tm], hist[tm-1, :])
 
@@ -456,11 +495,13 @@ def simulate_pre(
         # using Kt instead of K0
     jt = 1 - e_hist/ (alpha * lambda_bar * np.exp(hist[:, 0]))
     jt[jt <= 1e-16] = 1e-16
+    # Left-hand side of the first-order condition
     LHS = theta * vartheta_bar / lambda_bar * jt**(theta -1)
+    #  Marginal cost of consumption
     MC = delta / (alpha  - i_hist - alpha * vartheta_bar * jt**theta - x_hist)
-
+    # Compute consumption C
     C = (alpha  - i_hist - alpha * vartheta_bar * jt**theta - x_hist) * np.exp(hist[:, 0])
-
+    # Compute social value of R&D (svrd_hist)
     svrd_hist = np.exp(hist[:,2]) * dL_hist /(delta  * C**(-rho) * np.exp((rho-1)*vt))
 
 
@@ -470,7 +511,7 @@ def simulate_pre(
     # MU_RD = dL_hist * psi_0* psi_1 * x_hist**(psi_1-1) * np.exp(psi_1*(hist[:,0]-hist[:,2]))
 
     # scrd_hist = MU_RD/MC*1000
-
+    # Compute social value of R&D (svrd_hist)
     scrd_hist = np.exp(hist[:,2]) * dL_hist / MC * np.exp(hist[:, 0])
 
     scrd_hist2 = psi_0 * psi_1 * (x_hist * np.exp(hist[:,0] - hist[:, 2]) ) ** psi_1
@@ -580,6 +621,15 @@ def simulate_pre(
     return res
 
 def Damage_Intensity(Yt, y_bar_lower=1.5):
+    '''
+    Damage Jump Intensity 
+    Input: 
+    ---------------------------
+    Yt: Temperature Anomaly
+    Return:
+    ---------------------
+    Intensity: J^n    
+    '''
     r_1 = 1.5
     r_2 = 2.5
     Intensity = r_1 * (np.exp(r_2 / 2 * (Yt - y_bar_lower)**2) -1) * (Yt > y_bar_lower)
@@ -591,7 +641,18 @@ def Damage_Intensity(Yt, y_bar_lower=1.5):
 
 
 def model_simulation_generate(xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,rho,psi_0,psi_1,varrho):
+    """
+    Generate model simulation results for given ambiguity and preference parameters.
 
+    Parameters:
+    - xi_a, xi_k, xi_c, xi_j, xi_d, xi_g: Ambiguity aversion parameters for different state variables.
+    - rho: Relative risk aversion coefficient.
+    - psi_0, psi_1: Parameters related to the technology jump intensity.
+    - varrho: Parameter for the technology adoption rate.
+    
+    Returns:
+    - res: A dictionary containing the simulation results.
+    """
     # Output_Dir = "/scratch/bincheng/"
     Output_Dir = args.outputname
     Data_Dir = Output_Dir+"abatement/data_2tech/"+args.dataname+"/"
@@ -638,18 +699,19 @@ def model_simulation_generate(xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,rho,psi_0,psi_1,varr
         
     ME_base = model_tech1_pre_damage_ME_base["ME"]
 
+    # Extract control variables and value functions from the pre-damage model solution
+    v = model_tech1_pre_damage_ME_base["v0"]          # Value function before technology jump
+    i = model_tech1_pre_damage_ME_base["i_star"]      # Optimal investment in capital
+    e = model_tech1_pre_damage_ME_base["e_star"]      # Optimal emission control rate
+    x = model_tech1_pre_damage_ME_base["x_star"]      # Optimal R&D investment
+    pi_c = model_tech1_pre_damage_ME_base["pi_c"]     # Adjusted probabilities over climate models
+    g_tech = model_tech1_pre_damage_ME_base["g_tech"] # Technology jump intensity
+    g_damage = model_tech1_pre_damage_ME_base["g_damage"]  # Damage jump probabilities
+    h = model_tech1_pre_damage_ME_base["h"]           # Uncertainty adjustment for temperature anomaly
+    h_k = model_tech1_pre_damage_ME_base["h_k"]       # Uncertainty adjustment for capital
+    h_j = model_tech1_pre_damage_ME_base["h_j"]       # Uncertainty adjustment for knowledge capital
 
-    v = model_tech1_pre_damage_ME_base["v0"]
-    i = model_tech1_pre_damage_ME_base["i_star"]
-    e = model_tech1_pre_damage_ME_base["e_star"]
-    x = model_tech1_pre_damage_ME_base["x_star"]
-    pi_c = model_tech1_pre_damage_ME_base["pi_c"]
-    g_tech = model_tech1_pre_damage_ME_base["g_tech"]
-    g_damage =  model_tech1_pre_damage_ME_base["g_damage"]
-    h =  model_tech1_pre_damage_ME_base["h"]
-    h_k =  model_tech1_pre_damage_ME_base["h_k"]
-    h_j =  model_tech1_pre_damage_ME_base["h_j"]
-
+    # Extract the value function after technology adoption
     v_post_tech = model_tech2_pre_damage_ME_base["v0"]
 
 
@@ -657,7 +719,7 @@ def model_simulation_generate(xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,rho,psi_0,psi_1,varr
     with open(Data_Dir + File_Dir+"model_tech1_pre_damage", "rb") as f:
         tech1 = pickle.load(f)
     
-    
+    # Extract original control variables and value functions up to n_bar+1 in the Y dimension
     v_orig = tech1["v0"][:,:n_bar+1,:]
     i_orig = tech1["i_star"][:,:n_bar+1,:]
     e_orig = tech1["e_star"][:,:n_bar+1,:]

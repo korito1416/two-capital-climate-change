@@ -48,7 +48,7 @@ reporterror = True
 # petsc4py: matrix assembled in Python
 # eigen: matrix assembled in C++
 # both: petsc+petsc4py
-#
+ 
 now = datetime.now()
 current_time = now.strftime("%d-%H:%M")
  
@@ -394,8 +394,6 @@ V_post_3D = model_tech2_post_damage["v0"]
 
 print(model_tech2_post_damage.keys())
 
-
-
 print("-------------------------------------------")
 print("------------Post damage, Tech I-----------")
 print("-------------------------------------------")
@@ -476,5 +474,3 @@ else:
         # max_iter=maxiterarr[1],
         max_iter=1,
         )
-
-

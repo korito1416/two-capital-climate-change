@@ -205,7 +205,39 @@ def simulate_pre(
     initial=(np.log(85/0.115), 1.1, np.log(11.2)), 
     T0=0, T=40, dt=1/12,
     printing=True):
+    """
+    Simulate the dynamics of the model over time, including stochastic shocks and potential technology and damage jumps
+ 
+    Parameters:
+    - grid: tuple
+        Grids for the state variables (K, Y, L).
+    - model_args: tuple
+        Model parameters.
+    - controls: tuple
+        Control variables from the model solution.
+    - ME: np.ndarray
+        Marginal emission cost function.
+    - n_bar: int
+        Index limit for the Y grid.
+    - other_state: tuple
+        Contains model states for post-damage and post-technology scenarios.
+    - Y_long: np.ndarray
+        Extended grid for the temperature anomaly Y.
+    - initial: tuple
+        Initial values for the state variables (K, Y, L).
+    - T0: float
+        Start time for the simulation.
+    - T: float
+        End time for the simulation.
+    - dt: float
+        Time step size.
+    - printing: bool
+        Whether to print progress during the simulation.
 
+    Returns:
+    - res: dict
+        Dictionary containing the simulation results.
+    """
     K, Y, L = grid
     if printing==True:
         print("K_min={},K_max={},Y_min={},Y_max={},L_min={},L_max={}" .format(K.min(),K.max(),Y.min(),Y.max(),L.min(),L.max()))
@@ -377,7 +409,7 @@ def simulate_pre(
     damagejump_realization = np.zeros([pers])
     id3_vec = np.zeros([pers])
     gamma3_vec = np.zeros([pers])
-
+    # Main simulation loop over time periods
     for tm in range(pers):
         if tm == 0:
 
@@ -688,8 +720,7 @@ def Damage_Intensity(Yt, y_bar_lower=1.5):
     return Intensity
 
 
-
-
+ 
 
 
 def model_simulation_generate(xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,rho,psi_0,psi_1,varrho):

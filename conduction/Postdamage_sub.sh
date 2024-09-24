@@ -92,7 +92,7 @@ psi1arr=(0.5)
 LENGTH_psi=$((${#psi0arr[@]} - 1))
 LENGTH_xi=$((${#xi_a[@]} - 1))
 
-
+#  Special codes
 hXarr_SG=(0.2 0.2 0.2)
 Xminarr_SG=(4.00 0.0 -5.5 0.0)
 Xmaxarr_SG=(9.00 4.0 0.0 3.0)

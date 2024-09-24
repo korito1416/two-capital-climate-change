@@ -22,7 +22,7 @@
   <!-- <h4 align="center">Authors: Michael Barnett, William Brock, Lars Peter Hansen, Hong Zhang</h4> -->
 
   <p align="center">
-    Supporter: <a href="https://www.linkedin.com/in/bin-h-cheng/" target="_blank">Bin Cheng</a>, Pengyu Chen, Haoyang Sun
+    Supporter: <a href="https://www.linkedin.com/in/bin-h-cheng/" target="_blank">Bin Cheng</a>, <a href="https://www.linkedin.com/in/pengyu-chen-8916061a1/" target="_blank">Pengyu Chen</a>, <a href="https://www.linkedin.com/in/haoyangsun/" target="_blank">Haoyang Sun</a>
     <br />
     <!-- <a href="https://github.com/binchengecon/TwoCapital_Final.git"><strong>Explore the docs »</strong></a> <a href="Mitigation.pdf"><strong>View the paper</strong></a> -->
     <a href="https://climatesocialpolicy.readthedocs.io/en/latest/"><strong>Explore the docs</strong></a> · <a href="docs/Mitigation.pdf"><strong>View the paper</strong></a>
