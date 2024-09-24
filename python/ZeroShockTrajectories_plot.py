@@ -428,6 +428,18 @@ def model_simulation_generate(xi_a,xi_k,xi_c,xi_j,xi_d,xi_g,psi_0,psi_1,varrho,r
         res = pickle.load(f)
     return res
 
+#######################
+# This section generates plots of R&D investment as a percentage of GDP over time for various scenarios.
+# It iterates through all combinations of ambiguity aversion parameters (`xi_a`), and other parameters (`psi0`, `psi1`, `varrho`).
+# For each combination, the model is simulated using `model_simulation_generate`.
+# The R&D investment percentage is calculated as `(x / (alpha * exp(K))) * 100` and plotted against time.
+# Axis labels are set, and the y-axis limits are adjusted based on the `vartheta_bar` parameter.
+# After plotting, the code calculates the initial and final R&D investment percentages for Neutral, Less Aversion, and More Aversion scenarios.
+# If the current scenario index (`id_xiag`) is greater than 2, it prints the ratios of R&D investments compared to the Neutral scenario.
+# Finally, it prints the `delta`, `xi`, and initial R&D investment percentage.
+# The plot is then saved in both PDF and PNG formats, and the plotting window is closed.
+#######################
+
 print("RD")
 for id_xiag in range(len(xiaarr)): 
     for id_psi0 in range(len(psi0arr)):
@@ -480,7 +492,17 @@ plt.close()
 
 print("RD_log")
 
-
+#######################
+# This section generates plots of R&D investment as a percentage of GDP over time for various scenarios.
+# It iterates through all combinations of ambiguity aversion parameters (`xi_a`), and other parameters (`psi0`, `psi1`, `varrho`).
+# For each combination, the model is simulated using `model_simulation_generate`.
+# The R&D investment percentage is calculated as `(x / (alpha * exp(K))) * 100` and plotted against time.
+# The y-axis limits are adjusted based on the `vartheta_bar` parameter to ensure appropriate scaling.
+# After plotting, the code calculates the initial and final logarithm of R&D investment percentages for Neutral (`RD_Neu`), Less Aversion (`RD_Less`), and More Aversion (`RD_More`) scenarios.
+# If the current scenario index (`id_xiag`) is greater than 2, it prints the ratios of R&D investments compared to the Neutral scenario at both the initial and final periods.
+# Finally, it prints the `delta`, `xi`, and initial R&D investment percentage for each scenario.
+# The plot is then saved in both PDF and PNG formats, and the plotting window is closed to prepare for the next plot.
+#######################
 for id_xiag in range(len(xiaarr)): 
     for id_psi0 in range(len(psi0arr)):
         for id_psi1 in range(len(psi1arr)):
@@ -511,7 +533,15 @@ for id_xiag in range(len(xiaarr)):
                     print(labellist[id_xiag]+": More Ratio Left = {:.2f}".format(RD_More_0-temp_0)+": Neutrality Ratio Right = {:.2f}".format(RD_More_1-temp_1))
                                     
 
+#######################
+# This section generates plots of Consumption as a percentage of GDP over time for various scenarios.
+# It iterates through all combinations of ambiguity aversion parameters (`xi_a`), and other parameters (`psi0`, `psi1`, `varrho`).
+# For each combination, the model is simulated using `model_simulation_generate`.
+# The consumption percentage is calculated as `(c / (alpha * exp(K))) * 100` and plotted against time.
+# The y-axis limits are adjusted based on the `vartheta_bar` parameter to ensure appropriate scaling.
+# After plotting all scenarios, the plot is saved in both PDF and PNG formats, and the plotting window is closed.
 
+#######################
 for id_xiag in range(len(xiaarr)): 
     for id_psi0 in range(len(psi0arr)):
         for id_psi1 in range(len(psi1arr)):
@@ -541,6 +571,18 @@ plt.savefig(Plot_Dir+"/ConOutput_"+Filename+"_rho={}_delta={}_phi0={}".format(rh
 plt.savefig(Plot_Dir+"/ConOutput_"+Filename+"_rho={}_delta={}_phi0={}".format(rho,delta,phi_0)+".png")
 plt.close()
 
+#######################
+# This section generates plots of raw R&D investment over time for various scenarios.
+# It iterates through all combinations of ambiguity aversion parameters (`xi_a`), and other parameters (`psi0`, `psi1`, `varrho`).
+# For each combination, the model is simulated using `model_simulation_generate`.
+# The raw R&D investment (`x`) is plotted against time for each scenario.
+# The y-axis is labeled as '% of GDP', and the plot is titled "Raw R&D investment".
+# The x-axis limits are set to range from 0 to `IntPeriod`.
+# A legend is added to the upper left of the plot to identify different scenarios.
+# After plotting all scenarios, the keys of the simulation result (`res`) are printed for debugging purposes.
+# Finally, the plot is saved in both PDF and PNG formats with filenames that include the current values of `rho`, `delta`, and `phi_0`.
+# The plotting window is then closed to free up memory and prepare for the next plot.
+#######################
 
 for id_xiag in range(len(xiaarr)): 
     for id_psi0 in range(len(psi0arr)):
@@ -567,7 +609,17 @@ plt.savefig(Plot_Dir+"/RD_Raw"+Filename+"_rho={}_delta={}_phi0={}".format(rho,de
 plt.savefig(Plot_Dir+"/RD_Raw"+Filename+"_rho={}_delta={}_phi0={}".format(rho,delta,phi_0)+".png")
 plt.close()
 
-
+#######################
+# This section generates plots of expected R&D investment as a percentage of GDP over time for various scenarios.
+# It iterates through all combinations of ambiguity aversion parameters (`xi_a`), and other parameters (`psi0`, `psi1`, `varrho`).
+# For each combination, the model is simulated using `model_simulation_generate`.
+# The expected R&D investment percentage is calculated as `(x / (alpha * exp(K))) * 100 * (1 - true_tech_prob)` and plotted against time.
+# The y-axis is labeled as '% of GDP', and the plot is titled "R&D investment as percentage of GDP".
+# The y-axis limits are set to range from 0 to 15, and the x-axis limits are set from 0 to `IntPeriod`.
+# A legend is added to the upper left of the plot to identify different scenarios based on `labellist[id_xiag]`.
+# After plotting all scenarios, the keys of the simulation result (`res.keys()`) are printed for debugging purposes.
+# Finally, the plot is saved in both PDF and PNG formats with filenames that include the current values of `rho`, `delta`, and `phi_0`.
+# The plotting window is then closed to free up memory and prepare for the next plot.
 
 for id_xiag in range(len(xiaarr)): 
     for id_psi0 in range(len(psi0arr)):
@@ -594,7 +646,18 @@ plt.savefig(Plot_Dir+"/RD_Expected_"+Filename+"_rho={}_delta={}_phi0={}".format(
 plt.savefig(Plot_Dir+"/RD_Expected_"+Filename+"_rho={}_delta={}_phi0={}".format(rho,delta,phi_0)+".png")
 plt.close()
 
-
+#######################
+# This section generates plots of raw R&D investment over time for various scenarios.
+# It iterates through all combinations of ambiguity aversion parameters (`xi_a`), and other parameters (`psi0`, `psi1`, `varrho`).
+# For each combination, the model is simulated using `model_simulation_generate`.
+# The raw R&D investment (`x`) is plotted against time for each scenario where the second state variable is less than 1.5.
+# The x-axis is labeled as 'Years' and the y-axis is labeled as '% of GDP'.
+# The plot is titled "Raw R&D investment".
+# The y-axis limits are set to range from 30 to 160, and the x-axis limits are set from 0 to `IntPeriod` (e.g., 30 years).
+# A legend is added to the upper left of the plot to identify different scenarios based on `labellist[id_xiag]`.
+# After plotting all scenarios, the keys of the simulation result (`res.keys()`) are printed for debugging purposes.
+# Finally, the plot is saved in both PDF and PNG formats with filenames that include the current values of `rho`, `delta`, and `phi_0`.
+# The plotting window is then closed to free up memory and prepare for the next plot.
 
 for id_xiag in range(len(xiaarr)): 
     for id_psi0 in range(len(psi0arr)):
